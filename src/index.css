@@ -6,4 +6,16 @@
 
 * {
   font-family: "Poppins", sans-serif;
+  @apply text-gray-800;
 }
+
+body {
+  width: 1280px;
+  margin: auto;
+}
+
+.active {
+  @apply text-gray-800 font-semibold border-b;
+}
+/* .hover {
+} */
