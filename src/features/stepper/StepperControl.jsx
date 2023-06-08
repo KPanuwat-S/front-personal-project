@@ -3,9 +3,6 @@ import Button from "../../components/Button";
 import { Link } from "react-router-dom";
 
 function StepperControl({ handleClick, currentStep, steps }) {
-  console.log("steps", steps);
-  console.log(handleClick);
-  console.log("current Step", currentStep);
   return (
     <div className="flex justify-center gap-10 mx-auto w-2/3 mt-10 mb-8">
       {/* back button */}
@@ -50,7 +47,6 @@ function StepperControl({ handleClick, currentStep, steps }) {
       {/* next button */}
       {currentStep === steps.length ? (
         <Link to="/shop">
-
           {/* <Button onClick={() => {}} text="SHOP" primary={true}></Button> */}
         </Link>
       ) : (

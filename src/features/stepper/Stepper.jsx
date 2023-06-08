@@ -34,7 +34,6 @@ function Stepper({ steps, currentStep }) {
         count++;
       }
       count++;
-      console.log("count", count);
     }
     console.log(newSteps);
     return newSteps;

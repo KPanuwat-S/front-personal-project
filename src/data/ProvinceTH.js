@@ -1,5 +1,4 @@
 export const PronvinceTh = [
-  { name_th: "----SELECT PROVINE----" },
   {
     id: 1,
     name_th: "กรุงเทพมหานคร",

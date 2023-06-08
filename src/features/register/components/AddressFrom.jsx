@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import StepperControl from "../../stepper/StepperControl";
 import useForm from "../../../hooks/useForm";
 import { addressRegisterSchemaValidate } from "../../validators/validateRegister";
@@ -7,11 +7,13 @@ import InputErrorMessage from "../../auth/components/InputErrorMessage";
 import { PronvinceTh } from "../../../data/ProvinceTH";
 import { CityTH } from "../../../data/CityTH";
 import { DistrictTh } from "../../../data/DistrictTH";
+
 function AddressFrom({ handleClick, currentStep, steps }) {
   const [addressData, setAddressData] = useState({
     province: "",
     city: "",
     district: "",
+    zipCode: "",
   });
   const { input, handleChangeInput, error, handleSubmitForm } = useForm(
     {
@@ -41,12 +43,16 @@ function AddressFrom({ handleClick, currentStep, steps }) {
     }
   };
 
-  const ProvinceID = PronvinceTh.find((el) => {
-    return el.name_th === addressData.province;
-  });
+  const selectedProvince = PronvinceTh.find(
+    (el) => el.name_th === addressData.province
+  );
 
-  console.log("Province Id:", ProvinceID);
-
+  const selectedCity = CityTH.find((el) => el.name_th === addressData.city);
+  const setZipCode = (e) => {
+    const district = DistrictTh.find((el) => el.name_th === e.target.value);
+    const newData = { ...addressData, zipCode: district.zip_code };
+    setAddressData(newData);
+  };
   return (
     <form
       // onSubmit={handleSubmitForm(onSubmit)}
@@ -61,9 +67,11 @@ function AddressFrom({ handleClick, currentStep, steps }) {
           <select
             name="province"
             id="province"
-            className="bg-gray-200 px-4 py-2 w-full rounded-xl focus:outline-none focus:bg-gray-300"
+            className="bg-gray-100 px-4 py-2 w-full rounded-xl focus:outline-none focus:bg-gray-200"
             onChange={selectHandler}
           >
+            {" "}
+            <option className="text-gray-300">SELECT PROVINCE</option>
             {PronvinceTh.map((el) => {
               return <option value={el.name_th}>{el.name_th}</option>;
             })}
@@ -76,103 +84,58 @@ function AddressFrom({ handleClick, currentStep, steps }) {
         <div className="w-full">
           <label htmlFor="province">City</label>
           <select
-            name="province"
-            id="province"
-            className="bg-gray-200 px-4 py-2 w-full rounded-xl focus:outline-none focus:bg-gray-300"
+            name="city"
+            id="city"
+            className="bg-gray-100 px-4 py-2 w-full rounded-xl focus:outline-none focus:bg-gray-200"
+            onChange={selectHandler}
           >
+            <option>SELECT CITY</option>
             {CityTH.map((el) => {
-              if (el.province_id === ProvinceID?.id)
+              if (el.province_id === selectedProvince?.id)
                 return <option value={el.name_th}>{el.name_th}</option>;
             })}
           </select>
-          <InputErrorMessage message={error.province} />
+          <InputErrorMessage message={error.city} />
         </div>
       </div>
-      <div className="flex justify-between gap-10">
+
+      <div className="flex justify-between gap-10 items-center ">
         <div className="w-full">
           {/* 
-          PROVINCE
+          DISTRICT
           */}
-          <label htmlFor="province">Province</label>
+          <label htmlFor="province">District</label>
           <select
-            name="province"
-            id="province"
-            className="bg-gray-200 px-4 py-2 w-full rounded-xl focus:outline-none focus:bg-gray-300"
-            onChange={selectHandler}
+            name="district"
+            id="district"
+            className="bg-gray-100 px-4 py-2 w-full rounded-xl focus:outline-none focus:bg-gray-200"
+            onChange={(e) => {
+              selectHandler(e);
+              setZipCode(e);
+            }}
           >
-            {PronvinceTh.map((el) => {
-              return <option value={el.name_th}>{el.name_th}</option>;
-            })}
-          </select>
-          <InputErrorMessage message={error.province} />
-        </div>
-        {/* 
-          CITY
-          */}
-        <div className="w-full">
-          <label htmlFor="province">City</label>
-          <select
-            name="province"
-            id="province"
-            className="bg-gray-200 px-4 py-2 w-full rounded-xl focus:outline-none focus:bg-gray-300"
-          >
-            {CityTH.map((el) => {
-              if (el.province_id === ProvinceID?.id)
+            <option>SELECT DISTRICT</option>
+            {DistrictTh.map((el) => {
+              if (el.amphure_id === selectedCity?.id)
                 return <option value={el.name_th}>{el.name_th}</option>;
             })}
           </select>
-          <InputErrorMessage message={error.province} />
+          <InputErrorMessage message={error.district} />
+        </div>
+        <div className="w-full">
+          <label htmlFor="zipCode">ZIP Code</label>
+          <Input
+            type="text"
+            name="zipCode"
+            id="zipCode"
+            placeHolder="ZIP Code"
+            onChange={selectHandler}
+            className="w-full"
+            value={addressData.zipCode}
+          />
         </div>
       </div>
-      <div>
-        <Input
-          type="tel"
-          name="phoneNumber"
-          placeHolder="Phone Number"
-          inputTag="Phone Number"
-          isInValid={error.phoneNumber}
-          onChange={handleChangeInput}
-          value={input.email}
-        />
-        <InputErrorMessage message={error.phoneNumber} />
-      </div>
-      <div>
-        <Input
-          type="email"
-          name="email"
-          placeHolder="Email"
-          inputTag="Email"
-          isInValid={error.email}
-          onChange={handleChangeInput}
-          value={input.email}
-        />
-        <InputErrorMessage message={error.email} />
-      </div>
-      <div>
-        {" "}
-        <Input
-          type="password"
-          name="password"
-          placeHolder="Password"
-          inputTag="Password"
-          isInValid={error.password}
-          onChange={handleChangeInput}
-          value={input.password}
-        />
-        <InputErrorMessage message={error.password} />
-      </div>
-      <div>
-        <Input
-          type="password"
-          name="confirmPassword"
-          placeHolder="Confirm Password"
-          inputTag="Confirm Password"
-          isInValid={error.confirmPassword}
-          onChange={handleChangeInput}
-          value={input.confirmPassword}
-        />
-        <InputErrorMessage message={error.confirmPassword} />
-      </div>
+
       <StepperControl
         handleClick={handleClick}
         currentStep={currentStep}

@@ -9,6 +9,7 @@ import WishListPage from "../pages/WishListPage";
 import CartPage from "../pages/CartPage";
 import AuthenticationPage from "../pages/AuthenticationPage";
 import RegisterPage from "../pages/RegisterPage";
+import ProductDetail from "../pages/ProductDetail";
 
 export const navigationRouteChildren = [
   { path: "/", element: <HomePage /> },
@@ -21,4 +22,5 @@ export const navigationRouteChildren = [
   { path: "/cart", element: <CartPage /> },
   { path: "/authenticate", element: <AuthenticationPage /> },
   { path: "/register", element: <RegisterPage /> },
+  { path: "/products/:id", element: <ProductDetail /> },
 ];

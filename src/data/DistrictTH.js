@@ -1,4 +1,5 @@
 export const DistrictTh = [
+
   {
     id: 100101,
     zip_code: 10200,
