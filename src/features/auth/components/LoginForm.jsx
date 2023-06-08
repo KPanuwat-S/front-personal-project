@@ -16,12 +16,12 @@ function LoginForm() {
   );
 
   const onSubmit = async (data) => {
-    try {
-      await dispatch(login(data)).unwrap();
-    } catch (err) {
-      console.log(err);
-      toast.error("Invalid email address or mobile number or password");
-    }
+    // try {
+    //   await dispatch(login(data)).unwrap();
+    // } catch (err) {
+    //   console.log(err);
+    //   toast.error("Invalid email address or mobile number or password");
+    // }
   };
 
   return (

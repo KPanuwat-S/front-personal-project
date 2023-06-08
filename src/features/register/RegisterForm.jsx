@@ -6,6 +6,8 @@ import AddressFrom from "./components/AddressFrom";
 import PaymentForm from "./components/PaymentForm";
 import PageName from "../../components/PageName";
 import { StepperContext } from "../stepper/StepperContext";
+import Button from "../../components/Button";
+import { Link } from "react-router-dom";
 
 function RegisterForm() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -13,19 +15,43 @@ function RegisterForm() {
   const [finalData, setFinalData] = useState([]);
   const steps = ["General Info.", "Address Info.", "Payment Info."];
 
-  const displaySteps = (step) => {
-    return (
-      <div className="mt-10">
-        {step === 0 && <GeneralForm />}
-        {step === 1 && <AddressFrom />}
-        {step === 2 && <PaymentForm />}
-      </div>
-    );
-  };
   const handleClick = (direction) => {
     let newStep = currentStep;
-    direction === "next" ? newStep++ : newStep--;
-    newStep > 0 && newStep <= steps.length && setCurrentStep(newStep);
+    direction === "next" ? ++newStep : --newStep;
+    setCurrentStep(newStep);
+    console.log("running");
+  };
+  const displaySteps = (step) => {
+    return (
+      <div className="mt-10 flex flex-col items-center justify-center">
+        {step === 0 && (
+          <GeneralForm
+            handleClick={handleClick}
+            currentStep={currentStep}
+            steps={steps}
+          />
+        )}
+        {step === 1 && (
+          <AddressFrom
+            handleClick={handleClick}
+            currentStep={currentStep}
+            steps={steps}
+          />
+        )}
+        {step === 2 && (
+          <PaymentForm
+            handleClick={handleClick}
+            currentStep={currentStep}
+            steps={steps}
+          />
+        )}
+        {step === 3 && (
+          <Link to="/shop">
+            <Button text="SHOP" primary={true} />
+          </Link>
+        )}
+      </div>
+    );
   };
 
   // const getNewStep = (newStep) => {
@@ -46,15 +72,15 @@ function RegisterForm() {
           <StepperContext.Provider
             value={{ userData, setUserData, finalData, setFinalData }}
           >
-            {" "}
             {displaySteps(currentStep)}
           </StepperContext.Provider>
         </div>
-        <StepperControl
+
+        {/* <StepperControl
           handleClick={handleClick}
           currentStep={currentStep}
           steps={steps}
-        />
+        /> */}
       </div>
     </div>
   );

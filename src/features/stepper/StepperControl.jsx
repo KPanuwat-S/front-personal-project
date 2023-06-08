@@ -3,10 +3,13 @@ import Button from "../../components/Button";
 import { Link } from "react-router-dom";
 
 function StepperControl({ handleClick, currentStep, steps }) {
+  console.log("steps", steps);
+  console.log(handleClick);
+  console.log("current Step", currentStep);
   return (
-    <div className="flex justify-around mt-4 mb-8">
+    <div className="flex justify-center gap-10 mx-auto w-2/3 mt-10 mb-8">
       {/* back button */}
-      {currentStep === 1 ? (
+      {currentStep === 0 ? (
         <Link to="/authenticate">
           {" "}
           <Button
@@ -17,7 +20,7 @@ function StepperControl({ handleClick, currentStep, steps }) {
             primary={false}
           ></Button>
         </Link>
-      ) : (
+      ) : currentStep !== 3 ? (
         <Button
           onClick={() => {
             handleClick("back");
@@ -25,11 +28,31 @@ function StepperControl({ handleClick, currentStep, steps }) {
           text="BACK"
           primary={false}
         ></Button>
+      ) : (
+        ""
+      )}
+
+      {currentStep === 3 && (
+        <Link to="/shop">
+          {console.log("test shop")}
+          <Button onClick={() => {}} text="SHOP" primary={true}></Button>
+        </Link>
+      )}
+
+      {currentStep !== 0 && currentStep !== 3 ? (
+        <Link to="/shop">
+          <Button onClick={() => {}} text="SKIP" primary={false}></Button>
+        </Link>
+      ) : (
+        ""
       )}
 
       {/* next button */}
       {currentStep === steps.length ? (
-        ""
+        <Link to="/shop">
+
+          {/* <Button onClick={() => {}} text="SHOP" primary={true}></Button> */}
+        </Link>
       ) : (
         <Button
           onClick={() => {
