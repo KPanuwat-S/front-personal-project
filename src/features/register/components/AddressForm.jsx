@@ -8,7 +8,7 @@ import { PronvinceTh } from "../../../data/ProvinceTH";
 import { CityTH } from "../../../data/CityTH";
 import { DistrictTh } from "../../../data/DistrictTH";
 
-function AddressFrom({ handleClick, currentStep, steps }) {
+function AddressForm({ handleClick, currentStep, steps }) {
   const [addressData, setAddressData] = useState({
     province: "",
     city: "",
@@ -145,4 +145,4 @@ function AddressFrom({ handleClick, currentStep, steps }) {
   );
 }
 
-export default AddressFrom;
+export default AddressForm;

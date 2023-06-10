@@ -3,6 +3,7 @@ import Header from "../layout/Header";
 import { ManRoute, manRouteChildren } from "./ManRoute";
 // import { WomanRoute, womanRouteChildren } from "./WomanRoute";
 import { navigationRouteChildren } from "./NavigationRoute";
+import NotFound from "../pages/NotFound";
 // ManJeans
 
 const router = createBrowserRouter([
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
       </>
     ),
     children: navigationRouteChildren,
+    errorElement: <NotFound />,
   },
 
   {
@@ -22,6 +24,7 @@ const router = createBrowserRouter([
     element: <ManRoute />,
     children: manRouteChildren,
   },
+
   // { path: "/", element: <WomanRoute />, children: womanRouteChildren },
 ]);
 

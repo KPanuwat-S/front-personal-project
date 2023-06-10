@@ -4,6 +4,9 @@ import poster2 from "../assets/HomePagePics/poster-02.jpg";
 import Hero from "../components/Hero";
 import CTA from "../components/CTA";
 import ProductGroup from "../features/productCatalog/ProductGroup";
+import Footer from "../layout/Footer";
+import FeatureSection from "./FeatureSection";
+import BestPriceSection from "../components/BestPriceSection";
 
 function HomePage() {
   return (
@@ -23,13 +26,18 @@ function HomePage() {
           position="text-right"
         />
       </div>
-      <div className="mb-[120px]">
+
+      <div className="mb-[60px]">
         <CTA
           text="Explore UrbanChic to dress like eveary day is"
           bold="a special day."
         ></CTA>
       </div>
+
+      <BestPriceSection />
+      <FeatureSection />
       <ProductGroup />
+      <Footer></Footer>
     </>
   );
 }

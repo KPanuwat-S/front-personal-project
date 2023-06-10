@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Stepper from "../stepper/Stepper";
 import StepperControl from "../stepper/StepperControl";
 import GeneralForm from "./components/GeneralForm";
-import AddressFrom from "./components/AddressFrom";
+import AddressForm from "./components/AddressForm";
 import PaymentForm from "./components/PaymentForm";
 import PageName from "../../components/PageName";
 import { StepperContext } from "../stepper/StepperContext";
@@ -32,7 +32,7 @@ function RegisterForm() {
           />
         )}
         {step === 1 && (
-          <AddressFrom
+          <AddressForm
             handleClick={handleClick}
             currentStep={currentStep}
             steps={steps}
