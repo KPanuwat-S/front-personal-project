@@ -6,7 +6,7 @@ const initialState = {
   error: null,
   loading: false,
   user: null,
-  initailLoading: true,
+  initial: true,
 };
 
 export const registerAsync = createAsyncThunk(
@@ -29,13 +29,24 @@ export const loginAsync = createAsyncThunk(
     try {
       const res = await authService.login(input);
       setAccessToken(res.data.accessToken);
+      console.log("res", res.data.accessToken);
       const resFetchMe = await authService.fetchMe();
       return resFetchMe.data.user;
     } catch (err) {
+      console.log("login Async");
       return thunkApi.rejectWithValue(err.response.data.message);
     }
   }
 );
+
+export const fetchMe = createAsyncThunk("auth/fetchMe", async (_, thunkApi) => {
+  try {
+    const res = await authService.fetchMe();
+    return res.data.user;
+  } catch (err) {
+    return thunkApi.rejectWithValue(err.response.data.message);
+  }
+});
 
 export const authSlice = createSlice({
   name: "auth",
@@ -61,6 +72,18 @@ export const authSlice = createSlice({
       })
       .addCase(loginAsync.rejected, (state, action) => {
         state.error = action.payload;
+      })
+      .addCase(fetchMe.fulfilled, (state, action) => {
+        state.isAuthenticated = true;
+        state.user = action.payload;
+        state.initialLoading = false;
+      })
+      .addCase(fetchMe.rejected, (state, action) => {
+        state.error = action.payload;
+        state.initialLoading = false;
+      })
+      .addCase(fetchMe.pending, (state) => {
+        state.initialLoading = true;
       });
   },
 });

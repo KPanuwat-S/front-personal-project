@@ -6,10 +6,10 @@ function ProductGroup() {
   const src = [pic1, pic2];
   return (
     <div className="grid grid-cols-4 place-items-center">
+      {/* <ProductCard src={src} />
       <ProductCard src={src} />
       <ProductCard src={src} />
-      <ProductCard src={src} />
-      <ProductCard src={src} />
+      <ProductCard src={src} /> */}
     </div>
   );
 }

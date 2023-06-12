@@ -8,6 +8,7 @@ function ManViewAll() {
   return (
     <div>
       <div className="grid grid-cols-4 place-items-center mt-10 gap-20">
+        {/* <ProductCard src={src} id={1} />
         <ProductCard src={src} id={1} />
         <ProductCard src={src} id={1} />
         <ProductCard src={src} id={1} />
@@ -18,8 +19,7 @@ function ManViewAll() {
         <ProductCard src={src} id={1} />
         <ProductCard src={src} id={1} />
         <ProductCard src={src} id={1} />
-        <ProductCard src={src} id={1} />
-        <ProductCard src={src} id={1} />
+        <ProductCard src={src} id={1} /> */}
       </div>
     </div>
   );

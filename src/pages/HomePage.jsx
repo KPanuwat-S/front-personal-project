@@ -36,7 +36,7 @@ function HomePage() {
 
       <BestPriceSection />
       <FeatureSection />
-      <ProductGroup />
+      {/* <ProductGroup /> */}
       <Footer></Footer>
     </>
   );

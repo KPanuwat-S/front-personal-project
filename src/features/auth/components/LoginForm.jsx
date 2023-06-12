@@ -5,8 +5,16 @@ import SubmitButton from "../../../components/SubmitButton";
 import useForm from "../../../hooks/useForm";
 import validateLogin from "../../validators/validateLogin";
 import InputErrorMessage from "./InputErrorMessage";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { loginAsync } from "../slice/authSlice";
+import ErrorAlert from "../../../components/ErrorAlert";
+import { useState } from "react";
 
 function LoginForm() {
+  const dispatch = useDispatch();
+  const [shownError, setShownError] = useState(false);
+  const [errorMessage, seterrorMessage] = useState("");
   const { input, handleChangeInput, error, handleSubmitForm } = useForm(
     {
       email: "",
@@ -16,17 +24,19 @@ function LoginForm() {
   );
 
   const onSubmit = async (data) => {
-    // try {
-    //   await dispatch(login(data)).unwrap();
-    // } catch (err) {
-    //   console.log(err);
-    //   toast.error("Invalid email address or mobile number or password");
-    // }
+    try {
+      console.log("onSubmit");
+      await dispatch(loginAsync(data)).unwrap();
+    } catch (err) {
+      setShownError(true);
+      seterrorMessage(err);
+      console.log(err);
+    }
   };
 
   return (
     <form
-      className="flex flex-col gap-5 flex-5 mt-5"
+      className="flex flex-col gap-5 flex-5 mt-5 relative"
       onSubmit={handleSubmitForm(onSubmit)}
     >
       <LoginInput

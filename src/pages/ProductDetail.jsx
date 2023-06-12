@@ -1,28 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { data } from "../data/mockProduct";
+
 import pic from "../assets/HomePagePics/01-male-shirt-black-01.jpeg";
 import Input from "../components/Input";
-// import pic1 from
+
+import { useSelector, useDispatch } from "react-redux";
+import {
+  fetchProductDetailAsync,
+  removeProductAsync,
+} from "../features/productCatalog/slice/productSlice";
+import createSizes from "../utils/createSizes";
 
 function ProductDetail() {
+  const dispatch = useDispatch();
   const { id } = useParams();
-  const dataObj = data.find((el) => el.id === +id);
-  // use root source of pic for dev process
-  const [selectSize, setSelectSize] = useState(false);
-  const colors = dataObj.colors.map((el, index) => {
-    const style = {
-      backgroundColor: el,
-    };
-    return (
-      <>
-        <div id={index} className="h-5 w-5" style={style} role="button" />
-        {/* <label htmlFor={index} className="h-5 w-5" style={style}></label> */}{" "}
-      </>
-    );
-  });
+  const [fetchedData, setFetchedData] = useState([]);
 
-  const sizes = dataObj.size.map((el, index) => {
+  useEffect(() => {
+    dispatch(removeProductAsync()).unwrap();
+    dispatch(fetchProductDetailAsync(id)).unwrap();
+
+    return () => {
+      dispatch(removeProductAsync()).unwrap();
+    };
+  }, []);
+
+  const detailsData = useSelector((state) => state.product.details);
+  const detailsDataTransformed = detailsData[0];
+  let name = detailsDataTransformed?.[0].name;
+
+  let size = detailsDataTransformed?.[0]["sizes"].map((el) => {
     return (
       <div className="flex gap-2">
         <input
@@ -38,33 +45,79 @@ function ProductDetail() {
             className=" w-[120px] px-3 py-2 hover:bg-gray-100 rounded-xl block text-gray-600 font-light"
             role="button"
           >
-            {el.toLocaleUpperCase()}
+            {createSizes(el)}
           </label>
         </div>
       </div>
     );
   });
+
+  // const [pic, setPic] = useState("1");
+  const [pic, setPic] = useState("1");
+  // let img = detailsDataTransformed?.[`${pic}`].imgs;
+
+  const pictureChangeHandler = (e) => {
+    e.preventDefault();
+    const element = detailsDataTransformed.findIndex(
+      (el) => el.colorId == e.target.id
+    );
+    console.log(element);
+    setPic(element);
+  };
+  const colors = detailsDataTransformed?.map((el, index) => {
+    const color = el.colorId == 1 ? "black" : "white";
+    // setPic(el.colorId);
+    const style = {
+      backgroundColor: color,
+    };
+    return (
+      <div>
+        <div
+          id={el.colorId}
+          className="h-5 w-5 border"
+          style={style}
+          role="button"
+          onClick={pictureChangeHandler}
+        ></div>
+      </div>
+    );
+  });
+  
+
   return (
-    <div className="flex w-3/4 mx-auto mt-[90px] justify-between gap-[120px]">
-      <div className="flex-1 ">
-        <img src={pic} className="" />
-      </div>
-      <div className="flex-1">
-        <p>{dataObj.description}</p>
-        <hr className="mt-5 mb-5" />
-        <p className="text-gray-400">COLORS</p>
-        <div className="flex gap-5 mt-5">{colors}</div>
-        <hr className="mt-5 mb-5" />
-        <div>
-          <p className="text-gray-400">SIZES</p>
-          <div className="flex flex-col gap-2 mt-5">{sizes}</div>
+    <div className="flex w-3/4 mx-auto mt-[90px] justify-between gap-[60px]">
+      <div className="grid grid-cols-2 gap-5">
+        <img
+          className="w-[550px] col-span-1"
+          src={detailsDataTransformed?.[`${pic}`].imgs?.[1]}
+          alt=""
+        />
+        <div className="flex flex-col gap-5">
+          <img
+            className="w-[150px]"
+            src={detailsDataTransformed?.[`${pic}`].imgs?.[0]}
+            alt=""
+          />
+          <img
+            className="w-[150px]"
+            src={detailsDataTransformed?.[`${pic}`].imgs?.[2]}
+            alt=""
+          />
         </div>
-        <hr className="mt-5 mb-5" />
-        <div className="flex">
-          <label htmlFor="">Number</label>
-          <Input type="number" min={1} />
-        </div>
       </div>
+      {detailsData?.length > 0 && (
+        <div className="flex flex-col gap-5 flex-1">
+          <p>{name.toUpperCase()}</p>
+          <hr />
+          <p className="text-gray-500 font-light">COLOR</p>
+          <div className="flex gap-4">{colors}</div>
+          <hr />
+          <p className="text-gray-500 font-light">SIZE</p>
+          <div>{size}</div>
+          <hr />
+          <div>{}</div>
+        </div>
+      )}
     </div>
   );
 }

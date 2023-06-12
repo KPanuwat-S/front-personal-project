@@ -1,7 +1,9 @@
 import { Link, NavLink, Navigate } from "react-router-dom";
 import Search from "../components/Search";
-
+import { useSelector } from "react-redux";
+import DropDown from "./DropDown";
 function Header() {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   return (
     <div className="flex justify-between items-center mt-4 mb-4 w-[1280px] m-auto">
       <div className="flex-1">
@@ -50,10 +52,17 @@ function Header() {
             </g>
           </svg>
         </Link>
-        <Link to="/authenticate">
-          {" "}
-          <i class="fa-regular fa-user text-xl" role="button"></i>
-        </Link>
+
+        {isAuthenticated ? (
+          <Link to="/myProfile">
+            <i class="fa-regular fa-user text-xl" role="button"></i>
+          </Link>
+        ) : (
+          <Link to="/authenticate">
+            {" "}
+            <i class="fa-regular fa-user text-xl" role="button"></i>
+          </Link>
+        )}
       </div>
     </div>
   );

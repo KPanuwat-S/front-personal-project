@@ -5,10 +5,15 @@ import "./index.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { Provider } from "react-redux";
 import store from "./store";
+import { getAccessToken } from "./utils/localStorage.js";
+import { fetchMe } from "./features/auth/slice/authSlice.js";
+
+if (getAccessToken()) {
+  store.dispatch(fetchMe());
+}
+
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <App />
+  </Provider>
 );

@@ -8,7 +8,7 @@ import PageName from "../../components/PageName";
 import { StepperContext } from "../stepper/StepperContext";
 import Button from "../../components/Button";
 import { Link } from "react-router-dom";
-
+import { toast } from "react-toastify";
 function RegisterForm() {
   const [currentStep, setCurrentStep] = useState(0);
   const [userData, setUserData] = useState("");

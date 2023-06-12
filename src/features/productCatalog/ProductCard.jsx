@@ -3,38 +3,50 @@ import ColorDot from "./components/ColorDot";
 import Pirce from "./components/Pirce";
 import { Link } from "react-router-dom";
 
-function ProductCard({ src, id }) {
+function ProductCard({ productInfo }) {
+  const { id, name, description, discount, price, color, imgs } = productInfo;
+  const displayColor = color.map((el) => {
+    const color = el == "1" ? "black" : "white";
+    const colorProperty = `bg-${color}`;
+    return <ColorDot color={colorProperty} />;
+  });
+  // "id": 1,
+  // "name": "basic t-shirt",
+  // "description": "Loose-fit T-shirt made of compact cotton. Round neck and short sleeves.",
+  // "discount": "0",
+  // "price": "550",
+  // "createdAt": "2023-05-01T00:00:00.000Z",
+  // "gender": 1,
+  // "category": 1,
+  // "color": [
+  //     2,
+  //     1
+  // ]
   const [heart, setHeart] = useState(false);
-  const [picSource, setPicSource] = useState(src[0]);
+  const [picSource, setPicSource] = useState(imgs[1]);
   return (
-    <div className="relative">
+    <div className="relative w-[270px]">
       {" "}
       <Link to={`/products/${id}`}>
         {" "}
-        <div className="w-[227px]">
+        <div className="w-full">
           <img
             src={picSource}
             alt="product-picture"
             onMouseOver={() => {
-              setPicSource(src[1]);
+              setPicSource(imgs[2]);
             }}
             onMouseOut={() => {
-              setPicSource(src[0]);
+              setPicSource(imgs[1]);
             }}
+            className="object-cover"
           />
         </div>
         <div className="mt-2">
-          <p className="text-sm font-sm text-gray-700">
-            TEXTURED VISCOSE SHIRT
-          </p>
-          <Pirce price={30} />
+          <p className="text-sm font-sm text-gray-700">{name}</p>
+          <Pirce price={price} />
         </div>
-        <div className="flex gap-1 mt-2">
-          <ColorDot color="bg-red-500" />
-          <ColorDot color="bg-blue-500" />
-          <ColorDot color="bg-gray-500" />
-          <ColorDot color="bg-black-500" />
-        </div>
+        <div className="flex gap-1 mt-2">{displayColor}</div>
       </Link>
       {heart ? (
         <i

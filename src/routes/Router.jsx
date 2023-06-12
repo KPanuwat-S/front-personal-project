@@ -1,34 +1,86 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Header from "../layout/Header";
 import { ManRoute, manRouteChildren } from "./ManRoute";
-// import { WomanRoute, womanRouteChildren } from "./WomanRoute";
-import { navigationRouteChildren } from "./NavigationRoute";
 import NotFound from "../pages/NotFound";
+
+import HomePage from "../pages/HomePage";
+import BestPricePage from "../pages/BestPricePage";
+import NewInPage from "../pages/NewInPage";
+import WomanPage from "../pages/WomanPage";
+import ManPage from "../pages/ManPage";
+import ShopPage from "../pages/ShopPage";
+import WishListPage from "../pages/WishListPage";
+import CartPage from "../pages/CartPage";
+import AuthenticationPage from "../pages/AuthenticationPage";
+import RegisterPage from "../pages/RegisterPage";
+import ProductDetail from "../pages/ProductDetail";
+import MyProfilePage from "../pages/MyProfilePage";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
+import RedirectRoute from "../components/RedirectRoute";
 // ManJeans
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <>
-        <Header />
-        <Outlet />
-      </>
-    ),
-    children: navigationRouteChildren,
-    errorElement: <NotFound />,
-  },
-
-  {
-    path: "/",
-    element: <ManRoute />,
-    children: manRouteChildren,
-  },
-
-  // { path: "/", element: <WomanRoute />, children: womanRouteChildren },
-]);
-
 function Router() {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthentcated);
+  console.log(isAuthenticated);
+  const router = createBrowserRouter([
+    {
+      path: "/authenticate",
+      element: (
+        <RedirectRoute>
+          <Header />
+          <AuthenticationPage />
+        </RedirectRoute>
+      ),
+    },
+    {
+      path: "/",
+      element: (
+        // <RedirectRoute>
+        <>
+          <Header />
+          <Outlet />
+        </>
+        // </RedirectRoute>
+      ),
+      children: [
+        { path: "/", element: <HomePage /> },
+        { path: "/bestPrice", element: <BestPricePage /> },
+        { path: "/newIn", element: <NewInPage /> },
+        { path: "/woman", element: <WomanPage /> },
+        { path: "/man", element: <ManPage /> },
+        { path: "/shop", element: <ShopPage /> },
+        { path: "/wishList", element: <WishListPage /> },
+        { path: "/cart", element: <CartPage /> },
+        { path: "/authenticate", element: <AuthenticationPage /> },
+        { path: "/myProfile", element: <MyProfilePage /> },
+        // {
+        //   path: "/register",
+        //   element: !isAuthenticated ? <RegisterPage /> : <MyProfilePage />,
+        // },
+
+        { path: "/products/:id", element: <ProductDetail /> },
+      ],
+      errorElement: <NotFound />,
+    },
+
+    {
+      path: "/",
+      element: <ManRoute />,
+      children: manRouteChildren,
+    },
+
+    // {
+    //   path: "/myProfile",
+    //   element: (
+    //     <ProtectedRoute>
+    //       <MyProfilePage />
+    //     </ProtectedRoute>
+    //   ),
+    // },
+
+    // { path: "/", element: <WomanRoute />, children: womanRouteChildren },
+  ]);
+
   return <RouterProvider router={router} />;
 }
 
