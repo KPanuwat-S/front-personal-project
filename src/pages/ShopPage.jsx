@@ -13,16 +13,20 @@ function ShopPage() {
   useEffect(() => {
     dispatch(fetchProductAsync()).unwrap();
     return () => {
-      dispatch(removeProductAsync()).unwrap();
+      // dispatch(removeProductAsync()).unwrap();
     };
   }, []);
   const fetchedData = useSelector((state) => state.product.products);
 
-  const displayProduct = fetchedData.map((el) => (
+  const displayProduct = fetchedData?.[0]?.map((el) => (
     <ProductCard productInfo={el} />
   ));
   // {displayProduct}
-  return <div className="mt-[120px]">{displayProduct}</div>;
+  return (
+    <div className="mt-[120px] flex gap-10">
+      {fetchedData.length > 0 && displayProduct}
+    </div>
+  );
 }
 
 export default ShopPage;

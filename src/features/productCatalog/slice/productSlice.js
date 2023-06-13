@@ -14,7 +14,7 @@ export const fetchProductAsync = createAsyncThunk(
   async (input, thunkApi) => {
     try {
       const res = await productService.getAllProductModel();
-      return res.data.allProductModels[0];
+      return res.data.allProductModels;
     } catch (err) {
       return thunkApi.rejectWithValue(err.response.data.message);
     }
@@ -44,6 +44,16 @@ export const removeProductAsync = createAsyncThunk(
     }
   }
 );
+export const removeProductDetailAsync = createAsyncThunk(
+  "product/removehProductAsync",
+  async (input, thunkApi) => {
+    try {
+      return [];
+    } catch (err) {
+      return thunkApi.rejectWithValue(err.response.data.message);
+    }
+  }
+);
 
 export const productSlice = createSlice({
   name: "product",
@@ -64,6 +74,7 @@ export const productSlice = createSlice({
       })
       .addCase(removeProductAsync.fulfilled, (state, action) => {
         state.products = action.payload;
+        state.details = action.payload;
       })
       .addCase(fetchProductDetailAsync.fulfilled, (state, action) => {
         state.details.push(action.payload);
@@ -72,6 +83,9 @@ export const productSlice = createSlice({
       .addCase(fetchProductDetailAsync.rejected, (state, action) => {
         state.error = action.payload;
       });
+    // .addCase(removeProductDetailAsync.fulfilled, (state, action) => {
+    //   state.details = action.payload;
+    // });
   },
 });
 
