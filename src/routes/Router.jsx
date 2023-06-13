@@ -18,6 +18,7 @@ import MyProfilePage from "../pages/MyProfilePage";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import RedirectRoute from "../components/RedirectRoute";
+import EmpytCartPage from "../pages/EmptyCartPage";
 // ManJeans
 function Router() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthentcated);
@@ -32,6 +33,7 @@ function Router() {
         </RedirectRoute>
       ),
     },
+
     {
       path: "/",
       element: (
@@ -48,16 +50,17 @@ function Router() {
         { path: "/newIn", element: <NewInPage /> },
         { path: "/woman", element: <WomanPage /> },
         { path: "/man", element: <ManPage /> },
+        { path: "/cart", element: <CartPage /> },
         { path: "/shop", element: <ShopPage /> },
         { path: "/wishList", element: <WishListPage /> },
-        { path: "/cart", element: <CartPage /> },
+        // { path: "/cart", element: <CartPage /> },
         { path: "/authenticate", element: <AuthenticationPage /> },
         { path: "/myProfile", element: <MyProfilePage /> },
         // {
         //   path: "/register",
         //   element: !isAuthenticated ? <RegisterPage /> : <MyProfilePage />,
         // },
-
+        { path: "/emptyCart", element: <EmpytCartPage /> },
         { path: "/products/:id", element: <ProductDetail /> },
       ],
       errorElement: <NotFound />,
@@ -68,7 +71,21 @@ function Router() {
       element: <ManRoute />,
       children: manRouteChildren,
     },
-
+    // {
+    //   path: "/",
+    //   element: (
+    //     <>
+    //       {" "}
+    //       <Header />
+    //       <CartPage />
+    //       <Outlet />
+    //     </>
+    //   ),
+    //   children: [
+    //     { path: "/emptyCart", element: <EmpytCartPage /> },
+    //     { path: "/shop", element: <ShopPage /> },
+    //   ],
+    // },
     // {
     //   path: "/myProfile",
     //   element: (

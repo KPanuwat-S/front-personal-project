@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "./Button";
 import createSizes from "../utils/createSizes";
 import createColor from "../utils/createColor";
 import { useDispatch } from "react-redux";
 import { addItemToCartAsync } from "../features/productCatalog/slice/cartSlice";
-
-function CartForm({ data, setOpen }) {
+import QuantityInput from "./QuantityInput";
+import Modal from "./Modal";
+// Modal;
+function CartItem({ data }) {
   const dispatch = useDispatch();
   const { name, price, size, img, quantity, gender, color } = data;
   console.log(data);
@@ -19,6 +21,7 @@ function CartForm({ data, setOpen }) {
   const style = {
     backgroundColor: colorVText,
   };
+  const [open, setOpen] = useState(false);
   const colorStyle = (
     <div>
       <div className="h-4 w-4 border" style={style}></div>
@@ -49,30 +52,46 @@ function CartForm({ data, setOpen }) {
               {price * quantity}
             </div>
           </div>
-        </div>
-        <div className="flex">
-          <div className="flex-1"></div>
-          {/* <Button
-            text="ADD TO CART"
-            width="px-5"
-            onClick={() => {
-              setOpen(false);
-              dispatch(addItemToCartAsync(data));
-            }}
-          ></Button> */}
-          {/* dispatch(addItemToCartAsync(data)) */}
-          <Button
-            text="ADD TO CART"
-            width="px-5"
-            onClick={() => {
-              setOpen(false);
-              dispatch(addItemToCartAsync(data));
-            }}
-          ></Button>
+          <div className="flex flex-1 justify-between items-center">
+            <div className=""></div>
+            <div className="items-center">
+              {/* <QuantityInput price={price} getQuantity={getQuantity} /> */}
+            </div>
+            <div className="">
+              <div
+                onClick={() => {
+                  setOpen(true);
+                }}
+                role="button"
+                className="flex gap-2 items-center"
+              >
+                <i class="fa-regular fa-pen-to-square text-gray-500 text-sm "></i>
+                <p className="text-gray-500 font-light text-sm hover:text-gray-800 hover:underline">
+                  EDIT
+                </p>
+              </div>
+              <div>
+                {" "}
+                <Modal
+                  open={open}
+                  title="EDIT ITEM"
+                  width={35}
+                  onClose={() => {
+                    setOpen(false);
+                  }}
+                >
+                  EDIT
+                  {/* <CartForm data={selectedProduct} setOpen={setOpen}></CartForm> */}
+                </Modal>
+              </div>
+              <div>DELETE</div>
+            </div>
+          </div>
         </div>
       </div>
+      <hr className="mt-5" />
     </div>
   );
 }
 
-export default CartForm;
+export default CartItem;

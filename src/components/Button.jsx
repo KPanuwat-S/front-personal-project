@@ -1,6 +1,6 @@
 import createClasses from "../utils/createClasses";
 
-function Button({ text, primary, width = null, onClick, className = "" }) {
+function Button({ text, primary, width = 27, onClick = null, className = "" }) {
   let defaultProperty = "rounded-xl px-10 py-2 " + className;
   if (width) defaultProperty += `${width}`;
   const primaryProperty =
@@ -12,8 +12,11 @@ function Button({ text, primary, width = null, onClick, className = "" }) {
     primary ? primaryProperty : secondaryProperty
   );
   const clickHandler = (e) => {
-    // e.preventDefault();
-    onClick();
+    e.preventDefault();
+    if (onClick) {
+      onClick();
+      return;
+    }
   };
 
   return (

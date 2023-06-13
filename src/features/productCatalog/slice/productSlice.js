@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as productService from "../../../api/productApi";
-import { setAccessToken } from "../../../utils/localStorage";
+
 
 const initialState = {
   products: [],

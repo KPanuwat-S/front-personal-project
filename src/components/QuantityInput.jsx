@@ -1,21 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function QuantityInput({ price, getQuantity }) {
   const [value, setValue] = useState(1);
 
+  useEffect(() => {
+    getQuantity(value);
+  }, [value]);
+
   const increaseHandler = (e) => {
     e.preventDefault();
-    setValue((value) => value + 1);
-    getQuantity(value);
+    setValue((value) => ++value);
   };
   const decreaseHandler = (e) => {
     e.preventDefault();
     if (value > 1) setValue((value) => value - 1);
-    getQuantity(value);
   };
 
   return (
-    <div className="items-center justify-center">
+    <div className="items-center justify-center w-1/2">
       <label htmlFor="Quantity" className="sr-only">
         Quantity
       </label>

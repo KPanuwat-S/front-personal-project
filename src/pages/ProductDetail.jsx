@@ -35,7 +35,7 @@ function ProductDetail() {
   const [price, setPrice] = useState(defaultPrice);
   const [quantity, setQuantity] = useState(1);
   const getQuantity = (quantity) => {
-    setQuantity(quantity);
+    setQuantity((prev) => quantity);
     setSelectedProduct((prev) => {
       const data = prev;
       return { ...data, quantity: quantity };
@@ -45,7 +45,6 @@ function ProductDetail() {
 
   const [selectedProduct, setSelectedProduct] = useState({
     name: name,
-    // name: "name",
     size: detailsDataTransformed?.[0]["sizes"][0],
     quantity: quantity,
     color: detailsDataTransformed?.[0].colorId,
@@ -68,19 +67,36 @@ function ProductDetail() {
   let size = detailsDataTransformed?.[0]["sizes"].map((el) => {
     return (
       <div className="flex gap-2">
-        <input
-          type="radio"
-          value={el}
-          name="size"
-          id={el}
-          className="peer"
-          onClick={(e) => {
-            setSelectedProduct((prev) => {
-              const data = prev;
-              return { ...data, size: e.target.value };
-            });
-          }}
-        />
+        {el == 1 ? (
+          <input
+            type="radio"
+            value={el}
+            name="size"
+            id={el}
+            className="peer"
+            defaultChecked
+            onClick={(e) => {
+              setSelectedProduct((prev) => {
+                const data = prev;
+                return { ...data, size: e.target.value };
+              });
+            }}
+          />
+        ) : (
+          <input
+            type="radio"
+            value={el}
+            name="size"
+            id={el}
+            className="peer"
+            onClick={(e) => {
+              setSelectedProduct((prev) => {
+                const data = prev;
+                return { ...data, size: e.target.value };
+              });
+            }}
+          />
+        )}
         <div className="peer-checked:bg-gray-100 rounded-xl">
           <label
             htmlFor={el}
@@ -192,13 +208,13 @@ function ProductDetail() {
         <div>
           <Modal
             open={open}
-            title="ADD ITEM"
+            title="CONFIRM CART"
             width={35}
             onClose={() => {
               setOpen(false);
             }}
           >
-            <CartForm data={selectedProduct}></CartForm>
+            <CartForm data={selectedProduct} setOpen={setOpen}></CartForm>
           </Modal>
         </div>
       </div>
