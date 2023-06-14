@@ -3,10 +3,11 @@ import Search from "../components/Search";
 import { useSelector } from "react-redux";
 import DropDown from "./DropDown";
 import CartIcon from "../components/CartIcon";
+import AuthenticateIcon from "../components/AuthenticateIcon";
 
 function Header() {
-  const hasItems = useSelector((state) => state.cart.hasItems);
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  // const hasItems = useSelector((state) => state.cart.hasItems);
+  // const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   return (
     <div className="flex justify-between items-center mt-4 mb-4 w-[1280px] m-auto">
       <div className="flex-1">
@@ -30,19 +31,10 @@ function Header() {
           <i class="fa-regular fa-heart text-xl" role="button"></i>
         </Link>
         <Link to="/cart">
-          <CartIcon hasItems={hasItems} />
+          <CartIcon />
         </Link>
 
-        {isAuthenticated ? (
-          <Link to="/myProfile">
-            <i class="fa-regular fa-user text-xl" role="button"></i>
-          </Link>
-        ) : (
-          <Link to="/authenticate">
-            {" "}
-            <i class="fa-regular fa-user text-xl" role="button"></i>
-          </Link>
-        )}
+        <AuthenticateIcon />
       </div>
     </div>
   );

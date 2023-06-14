@@ -8,7 +8,8 @@ function CartOrder() {
   const [unit, setUnit] = useState(1);
   const [open, setOpen] = useState(false);
   const productsInCart = useSelector((state) => state.cart.cartProducts);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   useEffect(() => {
     const calPrice = productsInCart.reduce((acc, el) => {
       acc += el.price * el.quantity;
@@ -22,6 +23,7 @@ function CartOrder() {
     setUnit((unit) => (unit = calQuantity));
   }, [productsInCart]);
 
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   return (
     <div className="rounded-lg w-[400px] shadow-[0_0_15px_rgb(0_0_0_/0.2)] flex flex-col gap-10 overflow-hidden ">
       <div className="flex flex-col flex-1 px-10 py-10 gap-5">
@@ -54,12 +56,14 @@ function CartOrder() {
           }}
         >
           {isAuthenticated ? (
-            <Link>
+            <Link to="/successPayment">
               <button>CONFIRM ORDER</button>
             </Link>
           ) : (
-            <Link>
-              <button>LOGIN TO ORDER</button>
+            <Link to="/authenticate">
+              <button className="px-5 py-2 rounded-xl text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300">
+                LOGIN TO ORDER
+              </button>
             </Link>
           )}
         </Modal>

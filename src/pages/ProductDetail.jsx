@@ -10,7 +10,7 @@ import QuantityInput from "../components/QuantityInput";
 import Button from "../components/Button";
 import Modal from "../components/Modal";
 import CartForm from "../components/CartForm";
-
+import { v4 as uuidv4 } from "uuid";
 function ProductDetail() {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
@@ -25,13 +25,11 @@ function ProductDetail() {
       // dispatch(removeProductAsync()).unwrap();
     };
   }, []);
-  console.log(id);
 
   const detailsData = useSelector((state) => state.product.details);
   const detailsDataTransformed = detailsData?.[0];
-  console.log("detailData", detailsDataTransformed);
-  const defaultPrice = +detailsDataTransformed?.[0].price;
-  console.log(defaultPrice);
+
+  const defaultPrice = detailsDataTransformed?.[0].price;
   const [price, setPrice] = useState(defaultPrice);
   const [quantity, setQuantity] = useState(1);
   const getQuantity = (quantity) => {
@@ -50,17 +48,23 @@ function ProductDetail() {
     color: detailsDataTransformed?.[0].colorId,
     price: defaultPrice,
     img: detailsDataTransformed?.[0].imgs?.[0],
+    productModel: id,
+    sumPrice: defaultPrice * quantity,
   });
 
   useEffect(() => {
-    setSelectedProduct({
-      name: name,
-      // name: "name",
-      size: detailsDataTransformed?.[0]["sizes"][0],
-      quantity: quantity,
-      color: detailsDataTransformed?.[0].colorId,
-      price: defaultPrice,
-      img: detailsDataTransformed?.[0].imgs?.[0],
+    setSelectedProduct((prev) => {
+      return {
+        id: uuidv4(),
+        name: name,
+        size: detailsDataTransformed?.[0]["sizes"][0],
+        quantity: quantity,
+        color: detailsDataTransformed?.[0].colorId,
+        price: defaultPrice,
+        img: detailsDataTransformed?.[0].imgs?.[0],
+        productModel: id,
+        sumPrice: defaultPrice * quantity,
+      };
     });
   }, [detailsData]);
 
@@ -131,14 +135,10 @@ function ProductDetail() {
 
   const colors = detailsDataTransformed?.map((el, index) => {
     const color = el.colorId == 1 ? "black" : "white";
-    // setSelectedProduct((prev) => {
-    //   const data = prev;
-    //   return { ...data, color: color };
-    // });
     const style = {
       backgroundColor: color,
     };
-    console.log(typeof price);
+
     return (
       <div>
         <div
@@ -156,25 +156,27 @@ function ProductDetail() {
 
   const display = detailsData?.length > 0 && (
     <div className="flex w-3/4 mx-auto mt-[90px] justify-between gap-[60px]">
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-2 grid-rows-2 gap-5 overflow-hidden w-[1000px] h-[400px]">
         <div className="">
-          <img
-            className="w-[550px] col-span-1 "
-            src={detailsDataTransformed?.[`${pic}`].imgs?.[1]}
-            alt=""
-          />
-        </div>
-        <div className="flex flex-col gap-5 ">
           <div className="overflow-hidden">
             <img
-              className="w-[150px]   "
+              className="hover:scale-110"
               src={detailsDataTransformed?.[`${pic}`].imgs?.[0]}
               alt=""
             />
           </div>
-          <div className="overflow-hidden">
+        </div>
+        <div className="flex flex-col gap-5 col-span-1 row-span-2">
+          <div className="overflow-hidden w-[175px]">
             <img
-              className="w-[150px]"
+              className="hover:scale-110"
+              src={detailsDataTransformed?.[`${pic}`].imgs?.[1]}
+              alt=""
+            />
+          </div>
+          <div className="overflow-hidden w-[175px]">
+            <img
+              className="hover:scale-110"
               src={detailsDataTransformed?.[`${pic}`].imgs?.[2]}
               alt=""
             />
@@ -196,9 +198,9 @@ function ProductDetail() {
         </div>
         <hr />
         <div className="flex flex-col font-semibold text-gray-500 text-center gap-5">
-          ฿​ {defaultPrice}{" "}
+          ฿​ {defaultPrice * quantity}
           <Button
-            text="GO TO CART"
+            text="ADD TO CART"
             primary={true}
             onClick={() => {
               setOpen(true);
@@ -214,7 +216,11 @@ function ProductDetail() {
               setOpen(false);
             }}
           >
-            <CartForm data={selectedProduct} setOpen={setOpen}></CartForm>
+            <CartForm
+              data={selectedProduct}
+              setOpen={setOpen}
+              linkTo="/cart"
+            ></CartForm>
           </Modal>
         </div>
       </div>

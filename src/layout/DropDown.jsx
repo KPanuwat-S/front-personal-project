@@ -1,13 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-// import { logout } from "../features/auth/slice/auth-slice";
-
+import { logout } from "../features/auth/slice/authSlice";
 export default function Dropdown() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
+  console.log();
   const [open, setOpen] = useState(false);
   const dropdownEl = useRef(); //return obj {current: value}
   useEffect(() => {
@@ -22,31 +23,47 @@ export default function Dropdown() {
     };
   }, []);
   return (
-    <div className="relative" ref={dropdownEl}>
+    <div className="relative z-50" ref={dropdownEl}>
       {/* ref = {current: document.querySelector('.relative')} */}
       <div
         role="button"
         onClick={() => {
           setOpen(!open);
         }}
-      ></div>
-      {open && (
-        <div className="absolute bg-white w-96 right-0 translate-y-1 border rounded-xl shadow-lg p-2">
-          <Link
-            to="/profile"
-            onClick={() => {
-              setOpen(false);
-            }}
-          >
-            <div className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-xl">
-              <div>
-                <div className="font-semibold">test</div>
-                <div className="text-gray-500 text-sm">See your profile</div>
+      >
+        <i class="fa-regular fa-user text-xl" role="button"></i>
+
+        {open && (
+          <div className="absolute bg-white w-60 right-0 translate-y-1 border rounded-xl shadow-lg p-2">
+            <Link to="/myProfile">
+              {" "}
+              <div className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-xl">
+                <div className="flex gap-2">
+                  <i class="fa-regular fa-user text-gray-500"></i>
+                  <div className="text-gray-700 text-sm">My profile</div>
+                </div>
               </div>
-            </div>{" "}
-          </Link>
-          <hr className="border-1 border-gray-300 m-2" />
-          <div
+            </Link>
+
+            <hr className="border-1 border-gray-300 m-2" />
+            {/* <Link to="/authenticate"> */}
+            {/* <Navigate to="/authenticate"> */}
+            <div
+              className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-xl"
+              onClick={() => {
+                // navigate("/authenticate");
+                dispatch(logout());
+              }}
+            >
+              <div className="flex gap-2">
+                <i class="fa-solid fa-arrow-right-from-bracket text-gray-500"></i>
+                <div className="text-gray-700 text-sm">Log Out</div>
+              </div>
+            </div>
+            {/* </Navigate> */}
+            {/* </Link> */}
+            {/* </Link> */}
+            {/* <div
             onClick={() => {
               dispatch(logout());
             }}
@@ -57,9 +74,10 @@ export default function Dropdown() {
               <i class="fa-solid fa-right-from-bracket"></i>
             </div>
             <span className="text-sm font-bold">Log Out</span>
+          </div> */}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

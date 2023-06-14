@@ -2,11 +2,19 @@ import { useState } from "react";
 import ColorDot from "./components/ColorDot";
 import Pirce from "./components/Pirce";
 import { Link } from "react-router-dom";
+import { useInView } from "react-intersection-observer";
 
 function ProductCard({ productInfo }) {
+  const [ref, inView] = useInView({
+    triggerOnce: true, // Animation triggers only once when element comes into view
+  });
+
+  const animationClasses = inView ? "slideInUp" : "";
+
   const { id, name, description, discount, price, color, imgs } = productInfo;
   const displayColor = color.map((el) => {
     const color = el == "1" ? "black" : "white";
+    console.log(color);
     const colorProperty = `bg-${color}`;
     return <ColorDot color={colorProperty} />;
   });
@@ -25,46 +33,47 @@ function ProductCard({ productInfo }) {
   const [heart, setHeart] = useState(false);
   const [picSource, setPicSource] = useState(imgs[1]);
   return (
-    <div className="relative w-[270px]">
-      {" "}
-      <Link to={`/products/${id}`}>
-        {" "}
-        <div className="w-full">
-          <img
-            src={picSource}
-            alt="product-picture"
-            onMouseOver={() => {
-              setPicSource(imgs[2]);
+    <div ref={ref} className={animationClasses}>
+      <div className="relative w-[270px]">
+        <Link to={`/products/${id}`}>
+          {" "}
+          <div className="w-full">
+            <img
+              src={picSource}
+              alt="product-picture"
+              onMouseOver={() => {
+                setPicSource(imgs[2]);
+              }}
+              onMouseOut={() => {
+                setPicSource(imgs[1]);
+              }}
+              className="object-cover"
+            />
+          </div>
+          <div className="mt-2">
+            <p className="text-sm font-sm text-gray-700">{name}</p>
+            <Pirce price={price} />
+          </div>
+          <div className="flex gap-1 mt-2">{displayColor}</div>
+        </Link>
+        {heart ? (
+          <i
+            class="fa-solid fa-heart text-red-500 absolute top-3 right-3"
+            onClick={() => {
+              setHeart(!heart);
             }}
-            onMouseOut={() => {
-              setPicSource(imgs[1]);
+            role="button"
+          ></i>
+        ) : (
+          <i
+            class="fa-regular fa-heart absolute top-3 right-3 hover:text-red-500"
+            onClick={() => {
+              setHeart(!heart);
             }}
-            className="object-cover"
+            role="button"
           />
-        </div>
-        <div className="mt-2">
-          <p className="text-sm font-sm text-gray-700">{name}</p>
-          <Pirce price={price} />
-        </div>
-        <div className="flex gap-1 mt-2">{displayColor}</div>
-      </Link>
-      {heart ? (
-        <i
-          class="fa-solid fa-heart text-red-500 absolute top-3 right-3"
-          onClick={() => {
-            setHeart(!heart);
-          }}
-          role="button"
-        ></i>
-      ) : (
-        <i
-          class="fa-regular fa-heart absolute top-3 right-3 hover:text-red-500"
-          onClick={() => {
-            setHeart(!heart);
-          }}
-          role="button"
-        />
-      )}
+        )}
+      </div>
     </div>
   );
 }

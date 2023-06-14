@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "./Button";
 import createSizes from "../utils/createSizes";
 import createColor from "../utils/createColor";
-import { useDispatch } from "react-redux";
-import { addItemToCartAsync } from "../features/productCatalog/slice/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addItemToCartAsync,
+  addItemToLocalStorage,
+} from "../features/productCatalog/slice/cartSlice";
+import { Link } from "react-router-dom";
+import * as localStorageService from "../utils/localStorage/";
 
-function CartForm({ data, setOpen }) {
+function CartForm({ data, setOpen, linkTo }) {
+  console.log(data);
   const dispatch = useDispatch();
-  const { name, price, size, img, quantity, gender, color } = data;
+  const { name, price, size, img, quantity, gender, color, sumPrice } = data;
+  // const [sumPrice, setSumPrie] = useState(price * quantity);
   console.log(data);
   const dataHandler = (e) => {
     e.preventDefault();
@@ -15,9 +22,9 @@ function CartForm({ data, setOpen }) {
     setItemData(newData);
   };
   const sizeText = createSizes(size);
-  const colorVText = createColor(color);
+  const colorText = createColor(color);
   const style = {
-    backgroundColor: colorVText,
+    backgroundColor: colorText,
   };
   const colorStyle = (
     <div>
@@ -36,7 +43,7 @@ function CartForm({ data, setOpen }) {
               <span className="text-gray-400 font-light">SIZE: </span>{" "}
               {sizeText}
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <span className="text-gray-400 font-light">COLOR: </span>{" "}
               {colorStyle}
             </div>
@@ -46,7 +53,7 @@ function CartForm({ data, setOpen }) {
             </div>
             <div>
               <span className="text-gray-400 font-light">PRIZE: </span>
-              {price * quantity}
+              {sumPrice}
             </div>
           </div>
         </div>
@@ -61,14 +68,19 @@ function CartForm({ data, setOpen }) {
             }}
           ></Button> */}
           {/* dispatch(addItemToCartAsync(data)) */}
-          <Button
-            text="ADD TO CART"
-            width="px-5"
-            onClick={() => {
-              setOpen(false);
-              dispatch(addItemToCartAsync(data));
-            }}
-          ></Button>
+          <Link to={linkTo}>
+            <button
+              onClick={() => {
+                setOpen(false);
+                dispatch(addItemToCartAsync(data));
+                dispatch(addItemToLocalStorage());
+                // dispatch(fetchItemCartFromStorage());
+              }}
+              className="px-5 py-2 rounded-xl text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300"
+            >
+              ADD TO CART
+            </button>
+          </Link>
         </div>
       </div>
     </div>

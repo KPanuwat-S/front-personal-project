@@ -6,11 +6,13 @@ import { useDispatch } from "react-redux";
 import { addItemToCartAsync } from "../features/productCatalog/slice/cartSlice";
 import QuantityInput from "./QuantityInput";
 import Modal from "./Modal";
-// Modal;
-function CartItem({ data }) {
+import CartEditItem from "./CartEditItem";
+
+function CartItem({ data, deleteItemHandler }) {
   const dispatch = useDispatch();
-  const { name, price, size, img, quantity, gender, color } = data;
-  console.log(data);
+  const { id, name, price, size, img, quantity, gender, color } = data;
+  // console.log("id from cartitem", id);
+  // console.log(data);
   const dataHandler = (e) => {
     e.preventDefault();
     const newData = { ...itemData, [e.target.name]: e.target.value };
@@ -80,11 +82,17 @@ function CartItem({ data }) {
                     setOpen(false);
                   }}
                 >
-                  EDIT
-                  {/* <CartForm data={selectedProduct} setOpen={setOpen}></CartForm> */}
+                  <CartEditItem setOpen={setOpen} id={id}></CartEditItem>
                 </Modal>
               </div>
-              <div>DELETE</div>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  deleteItemHandler(id);
+                }}
+              >
+                DELETE
+              </button>
             </div>
           </div>
         </div>

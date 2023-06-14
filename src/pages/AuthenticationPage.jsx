@@ -15,15 +15,9 @@ function AuthenticationPage() {
         <LoginForm></LoginForm>
 
         <Link to="/register">
-          <Button
-            width="w-full mt-5"
-            text="CREATE NEW ACCOUNT"
-            primary={false}
-            onClick={() => {
-              // console.log("Test");
-              // return <Link to="/register" />;
-            }}
-          />
+          <button className="w-full mt-5 rounded-xl px-10 py-2 text-gray-900 bg-white border border-black hover:bg-gray-800 hover:text-white ease-out duration-300">
+            CREATE NEW ACCOUNT
+          </button>
         </Link>
       </div>
       <div className="w-1/2">

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-function QuantityInput({ price, getQuantity }) {
-  const [value, setValue] = useState(1);
+function QuantityInput({ price, getQuantity, preValue = 1 }) {
+  const [value, setValue] = useState(preValue);
 
   useEffect(() => {
     getQuantity(value);

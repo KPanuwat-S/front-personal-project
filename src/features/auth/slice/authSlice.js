@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as authService from "../../../api/authApi";
-import { setAccessToken } from "../../../utils/localStorage";
+import { setAccessToken, removeAccessToken } from "../../../utils/localStorage";
 const initialState = {
   isAuthenticated: false,
   error: null,
@@ -48,12 +48,20 @@ export const fetchMe = createAsyncThunk("auth/fetchMe", async (_, thunkApi) => {
   }
 });
 
+export const logout = createAsyncThunk("auth/logout", async () => {
+  removeAccessToken();
+});
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(logout.fulfilled, (state) => {
+        state.isAuthenticated = false;
+        state.user = null;
+      })
       .addCase(registerAsync.pending, (state) => {
         state.loading = true;
       })

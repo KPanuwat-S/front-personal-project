@@ -19,6 +19,9 @@ import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import RedirectRoute from "../components/RedirectRoute";
 import EmpytCartPage from "../pages/EmptyCartPage";
+import SuccessPayment from "../pages/SuccessPayment";
+import ProtectedRoute from "./ProtectedRoute";
+
 // ManJeans
 function Router() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthentcated);
@@ -33,7 +36,15 @@ function Router() {
         </RedirectRoute>
       ),
     },
-
+    {
+      path: "/myProfile",
+      element: (
+        <ProtectedRoute>
+          <Header />
+          <MyProfilePage></MyProfilePage>
+        </ProtectedRoute>
+      ),
+    },
     {
       path: "/",
       element: (
@@ -56,10 +67,11 @@ function Router() {
         // { path: "/cart", element: <CartPage /> },
         { path: "/authenticate", element: <AuthenticationPage /> },
         { path: "/myProfile", element: <MyProfilePage /> },
-        // {
-        //   path: "/register",
-        //   element: !isAuthenticated ? <RegisterPage /> : <MyProfilePage />,
-        // },
+        { path: "/successPayment", element: <SuccessPayment /> },
+        {
+          path: "/register",
+          element: <RegisterPage />,
+        },
         { path: "/emptyCart", element: <EmpytCartPage /> },
         { path: "/products/:id", element: <ProductDetail /> },
       ],
