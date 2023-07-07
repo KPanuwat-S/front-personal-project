@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import createSizes from "../utils/createSizes";
 import createColor from "../utils/createColor";
@@ -7,12 +7,12 @@ import { addItemToCartAsync } from "../features/productCatalog/slice/cartSlice";
 import QuantityInput from "./QuantityInput";
 import Modal from "./Modal";
 import CartEditItem from "./CartEditItem";
+import { fetchProductDetailAsync } from "../features/productCatalog/slice/productSlice";
 
 function CartItem({ data, deleteItemHandler }) {
   const dispatch = useDispatch();
-  const { id, name, price, size, img, quantity, gender, color } = data;
-  // console.log("id from cartitem", id);
-  // console.log(data);
+  const { id, name, price, size, imgs, quantity, productModelId, color } = data;
+
   console.log("data", data);
   const dataHandler = (e) => {
     e.preventDefault();
@@ -30,12 +30,18 @@ function CartItem({ data, deleteItemHandler }) {
       <div className="h-4 w-4 border" style={style}></div>
     </div>
   );
+  useEffect(() => {
+    dispatch(fetchProductDetailAsync(productModelId));
+    console.log("running");
+  }, [open]);
+
+  console.log("color", color);
 
   return (
     <div>
       <div className="flex flex-col gap-5">
         <div className="flex gap-5">
-          <img className="w-[150px]" src={img} alt="" />
+          <img className="w-[150px]" src={imgs[0]} alt="" />
           <div className="flex flex-col">
             <div className="text-gray-600 mb-5">{name?.toUpperCase()}</div>
             <div>
@@ -83,7 +89,11 @@ function CartItem({ data, deleteItemHandler }) {
                     setOpen(false);
                   }}
                 >
-                  <CartEditItem setOpen={setOpen} id={id}></CartEditItem>
+                  <CartEditItem
+                    setOpen={setOpen}
+                    id={id}
+                    productModelId={productModelId}
+                  ></CartEditItem>
                 </Modal>
               </div>
               <button
@@ -98,7 +108,7 @@ function CartItem({ data, deleteItemHandler }) {
           </div>
         </div>
       </div>
-      <hr className="mt-5" />
+      <hr className="mt-5 mb-5" />
     </div>
   );
 }

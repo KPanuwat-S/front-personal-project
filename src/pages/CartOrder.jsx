@@ -7,43 +7,35 @@ import * as localStorageService from "../utils/localStorage";
 import SuccessPayment from "./ConfirmOrderMal";
 import ConfirmOrderModal from "./ConfirmOrderMal";
 
-import { removeFromCart } from "../features/productCatalog/slice/cartSlice";
+import {
+  calPrice,
+  calQuantity,
+  removeFromCart,
+} from "../features/productCatalog/slice/cartSlice";
 import { useLocation } from "react-router-dom";
 function CartOrder() {
-  const [price, setPrice] = useState(0);
-  const [unit, setUnit] = useState(1);
   const [open, setOpen] = useState(false);
-  // const productsInCart = useSelector((state) => state.cart.cartProducts);
-  const productsInCart = localStorageService.getCartItems();
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const dispatch = useDispatch();
-  useEffect(() => {
-    const calPrice = productsInCart.reduce((acc, el) => {
-      acc += el.price * el.quantity;
-      return acc;
-    }, 0);
-    const calQuantity = productsInCart.reduce((acc, el) => {
-      acc += el.quantity;
-      return acc;
-    }, 0);
-    setPrice((price) => (price = calPrice));
-    setUnit((unit) => (unit = calQuantity));
-  }, [productsInCart]);
+  dispatch(calPrice());
+  dispatch(calQuantity());
+
+  const totalPrice = useSelector((state) => state.cart.cartTotalAmount);
+  const totalQuantity = useSelector((state) => state.cart.cartTotalQuantity);
 
   const location = useLocation();
-  console.log("location in cart order", location);
+
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   return (
     <div className="rounded-lg w-[400px] shadow-[0_0_15px_rgb(0_0_0_/0.2)] flex flex-col gap-10 overflow-hidden ">
       <div className="flex flex-col flex-1 px-10 py-10 gap-5">
         <div className="flex gap-5 items-center">
           <span className="font-bold text-gray-400 flex-1">QUANTITY</span>
-          <p className="text-xl font-semibold">{unit}</p>
+          <p className="text-xl font-semibold">{totalQuantity}</p>
         </div>
         <hr />
         <div className="flex gap-5 items-center">
           <span className="font-bold text-gray-400 flex-1">TOTAL</span>
-          <p className="text-xl font-semibold ">{price}</p>
+          <p className="text-xl font-semibold ">{totalPrice}</p>
         </div>
         <hr />
       </div>
@@ -66,8 +58,8 @@ function CartOrder() {
         >
           {isAuthenticated ? (
             <ConfirmOrderModal
-              price={price}
-              unit={unit}
+              price={totalPrice}
+              unit={totalQuantity}
               onClose={() => {
                 setOpen(false);
               }}

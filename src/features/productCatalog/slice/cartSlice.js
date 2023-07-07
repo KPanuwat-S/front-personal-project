@@ -1,15 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as localStorageService from "../../../utils/localStorage";
+import * as cartService from "../../../api/cartApi";
 const initialState = {
-  cartProducts: localStorage.getItem("cartItems")
-    ? localStorageService.getCartItems()
-    : [],
+  cartItems: [],
   cartTotalQuantity: 0,
   cartTotalAmount: 0,
   hasItems: false,
-  likedProducts: localStorage.getItem("likedItems")
-    ? localStorageService.getLikedItems()
-    : [],
+  likedProducts: [],
   orderProducts: [],
 };
 
@@ -28,8 +25,7 @@ export const addItemToCartAsync = createAsyncThunk(
   "cart/addItemToCartAsync",
   async (input, thunkApi) => {
     try {
-      console.log("addItemToCartAsync");
-      console.log("input", input);
+      const res = cartService.addItemToCart(input);
       return input;
     } catch (err) {
       return thunkApi.rejectWithValue(err.response.data);
@@ -59,11 +55,12 @@ export const fetchItemCartFromStorage = createAsyncThunk(
   }
 );
 
-export const deleteItemCart = createAsyncThunk(
+export const deleteItemCartAsync = createAsyncThunk(
   "cart/deleteItemCart",
   async (input, thunkApi) => {
     try {
-      return input;
+      const deleted = cartService.deleteItemFromCart(input);
+      return deleted;
     } catch (err) {
       return thunkApi.rejectWithValue(err.response.data);
     }
@@ -92,34 +89,39 @@ export const editItemCart = createAsyncThunk(
   }
 );
 
+// ------ Refactor
+export const fetchCartItemsAsync = createAsyncThunk(
+  "cart/fetchCartItemsAsync",
+  async (input, thunkApi) => {
+    try {
+      const res = await cartService.getAllCartItems();
+      console.log("res.data", res.data);
+      return res.data;
+    } catch (err) {
+      return thunkApi.rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
     addToCart(state, action) {
-      state.cartProducts.unshift(action.payload);
-      localStorageService.setCartItems(state.cartProducts);
+      state.cartItems.unshift(action.payload);
     },
     removeFromCart(state, action) {
-      state.cartProducts = state.cartProducts.filter(
-        (el) => el.id != action.payload
-      );
-      localStorageService.setCartItems(state.cartProducts);
+      state.cartItems = state.cartItems.filter((el) => el.id != action.payload);
     },
     editItemFromCart(state, action) {
       const newItem = action.payload.data;
-      const filteredData = state.cartProducts.filter(
+      const filteredData = state.cartItems.filter(
         (el) => el.id !== action.payload.id
       );
       const newData = [...filteredData, newItem];
-      state.cartProducts = newData;
-      localStorageService.setCartItems(state.cartProducts);
+      state.cartItems = newData;
     },
     addToLike(state, action) {
-      // const addProduct = state.likedProducts
-      //   .unshift(action.payload)
-      //   .filter((el) => el.id !== action.payload);
-      // if (action.payload.id !== state.likedProducts)
       state.likedProducts.unshift(action.payload);
       localStorageService.setLikedItems(state.likedProducts);
     },
@@ -130,62 +132,54 @@ export const cartSlice = createSlice({
       localStorageService.setLikedItems(state.likedProducts);
     },
     confirmCart(state, action) {
-      state.orderProducts = state.cartProducts;
-      state.cartProducts = [];
+      state.orderProducts = state.cartItems;
+      state.cartItems = [];
       localStorageService.removeCartItems;
     },
+    calPrice(state, action) {
+      state.cartTotalAmount = state.cartItems.reduce((acc, el) => {
+        acc += +el.price * el.quantity;
+        console.log("el", el.price);
+        return acc;
+      }, 0);
+    },
+    calQuantity(state, action) {
+      state.cartTotalQuantity = state.cartItems.reduce((acc, el) => {
+        acc += el.quantity;
+        return acc;
+      }, 0);
+    },
   },
-  // extraReducers: (builder) => {
-  //   builder
-  //     .addCase(addItemToCartAsync.pending, (state, action) => {
-  //       state.loading = true;
-  //     })
-  //     .addCase(addItemToCartAsync.fulfilled, (state, action) => {
-  //       console.log("actionPayload", action.payload);
-  //       state.cartProducts.unshift(action.payload);
-  //       state.loading = false;
-  //       state.hasItems = true;
-  //     })
-  //     .addCase(addItemToCartAsync.rejected, (state, action) => {
-  //       state.error = action.payload;
-  //     })
-  //     .addCase(addItemToLocalStorage.pending, (state, action) => {
-  //       state.loading = true;
-  //     })
-  //     .addCase(addItemToLocalStorage.fulfilled, (state, action) => {
-  //       localStorageService.setCartItems(state.cartProducts);
-  //     })
-  //     .addCase(fetchItemCartFromStorage.fulfilled, (state, action) => {
-  //       state.cartProducts = action.payload;
-  //     })
-  //     .addCase(deleteItemCart.fulfilled, (state, action) => {
-  //       const newCartItems = state.cartProducts.filter(
-  //         (el) => el.id == action.payload
-  //       );
-  //       state.cartProducts = newCartItems;
-  //     })
-  //     .addCase(deleteItemFromStorage.fulfilled, (state, action) => {
-  //       console.log(action.payload);
-  //       const newCartItems = localStorageService
-  //         .getCartItems()
-  //         .filter((el) => el.id !== action.payload);
-  //       // localStorageService.removeCartItems();
-
-  //       localStorageService.setCartItems(newCartItems);
-  //     })
-  //     .addCase(editItemCart.fulfilled, (state, action) => {
-  //       console.log("editItemCart");
-  //       const uneditedData = localStorageService
-  //         .getCartItems()
-  //         .filter((el) => el.id !== action.payload.id);
-  //       // let editCartItems = localStorageService
-  //       //   .getCartItems()
-  //       //   .map((el) => el.id == action.payload.id);
-
-  //       const allData = { ...uneditedData, ...action.payload.data };
-  //       localStorageService.setCartItems(allData);
-  //     });
-  // },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCartItemsAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(fetchCartItemsAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cartItems = action.payload;
+      })
+      .addCase(fetchCartItemsAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(addItemToCartAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(addItemToCartAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(deleteItemCartAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(deleteItemCartAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(deleteItemCartAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
 });
 
 export const {
@@ -195,5 +189,7 @@ export const {
   addToLike,
   removeFromLike,
   confirmCart,
+  calPrice,
+  calQuantity,
 } = cartSlice.actions;
 export default cartSlice.reducer;

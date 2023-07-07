@@ -8,27 +8,26 @@ import QuantityInput from "./QuantityInput";
 import {
   addItemToCartAsync,
   addItemToLocalStorage,
-  deleteItemCart,
   deleteItemFromStorage,
   editItemCart,
   editItemFromCart,
 } from "../features/productCatalog/slice/cartSlice";
 import { v4 as uuidv4 } from "uuid";
-function CartEditItem({ id, setOpen }) {
-  const data = useSelector((state) => state.cart.cartProducts);
-  const detailsData = useSelector((state) => state.product.details);
-
-  // Get Data of Edited Item
+function CartEditItem({ id, setOpen, productModelId }) {
+  const data = useSelector((state) => state.cart.cartItems);
   const dispatch = useDispatch();
+
+  console.log("productModelId", productModelId);
+  const detailsData = useSelector((state) => state.product.details);
+  // Get Data of Edited Item
+
   const editData = data.find((el) => el.id == id);
 
   // Get Data Set of Model
   const detailsDataTransformed = detailsData?.[0];
-  console.log("detailsData", detailsData);
-  console.log("transform", detailsDataTransformed);
 
   // Retrieve Value of Data
-  const { name, price, size, img, quantity, gender, color } = editData;
+  const { name, price, size, imgs, quantity, gender, color } = editData;
   const [editDataFinal, setEditDataFinal] = useState(editData);
   const [editPrice, seteditPrice] = useState(price);
   const [editQuantity, setEditQuantity] = useState(quantity);
@@ -36,12 +35,12 @@ function CartEditItem({ id, setOpen }) {
   console.log("edti data", editData);
   // Size from DB
   console.log("detaildatatransform", detailsDataTransformed);
-  const sizes = detailsDataTransformed?.[0]["sizes"].map((el) => el);
+  const sizes = detailsDataTransformed?.["sizes"].map((el) => el);
   console.log("sizes", sizes);
   // Size from Front End
   const [editSize, setEditSize] = useState(size);
   const [editColor, setEditColor] = useState(color);
-  const [editImg, setEditImg] = useState(img);
+  const [editImg, setEditImg] = useState(imgs[0]);
   // const sizeText = createSizes(size);
   const colorText = createColor(color);
 
@@ -62,14 +61,14 @@ function CartEditItem({ id, setOpen }) {
         size: editSize,
         color: editColor,
         price: editPrice,
-        img: detailsDataTransformed?.[`${editPic}`].imgs?.[0],
+        img: detailsDataTransformed?.imgs?.[0],
         quantity: editQuantity,
         sumPrice: price * editQuantity,
       };
     });
   }, [
     editSize,
-    img,
+    imgs,
     editColor,
     editPrice,
     detailsDataTransformed,
@@ -86,16 +85,15 @@ function CartEditItem({ id, setOpen }) {
   };
   const pictureChangeHandler = (e) => {
     e.preventDefault();
-    const element = detailsDataTransformed.findIndex(
-      (el) => el.colorId == e.target.id
-    );
-    setEditColor(detailsDataTransformed?.[`${element}`].colorId);
+    console.log("detailsData", detailsData);
+    const element = detailsData.findIndex((el) => el.colorId == e.target.id);
+    setEditColor(detailsData?.[`${element}`].colorId);
 
-    setEditImg(detailsDataTransformed?.[`${element}`].imgs?.[0]);
+    setEditImg(detailsData?.[`${element}`].imgs?.[0]);
 
     // setEditColor(e.target.value);
   };
-  const colors = detailsDataTransformed?.map((el, index) => {
+  const colors = detailsData?.map((el, index) => {
     const color = el.colorId == 1 ? "black" : "white";
     const style = {
       backgroundColor: color,
@@ -117,7 +115,7 @@ function CartEditItem({ id, setOpen }) {
 
   const payload = { id: id, data: editDataFinal };
   const editItemCartHandler = () => {
-    dispatch(editItemFromCart(payload));
+    // dispatch(editItemFromCart(payload));
   };
   // UI
   return (
@@ -186,6 +184,7 @@ function CartEditItem({ id, setOpen }) {
             onClick={() => {
               setOpen(false);
               editItemCartHandler();
+              console.log("editDataFinal", editDataFinal);
               // dispatch(editItemCart(payload));
             }}
             className="px-5 py-2 rounded-xl text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300"

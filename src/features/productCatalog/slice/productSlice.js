@@ -5,9 +5,7 @@ import * as localStorageService from "../../../utils/localStorage";
 const initialState = {
   products: [],
   loading: false,
-  details: localStorage.getItem("detailsProduct")
-    ? localStorageService.getProductDetails()
-    : [],
+  details: [],
   error: null,
 };
 
@@ -29,6 +27,7 @@ export const fetchProductDetailAsync = createAsyncThunk(
     try {
       const res = await productService.getAllProductDetails(input);
       console.log("test");
+      console.log("res", res.data.productDetail);
       return res.data.productDetail;
     } catch (err) {
       return thunkApi.rejectWithValue(err.response.data.message);
@@ -75,12 +74,15 @@ export const productSlice = createSlice({
         state.loading = false;
       })
       .addCase(removeProductAsync.fulfilled, (state, action) => {
-        state.products = action.payload;
-        state.details = action.payload;
+        state.products = [];
+        state.details = [];
+      })
+      .addCase(fetchProductDetailAsync.pending, (state, action) => {
+        state.loading = true;
       })
       .addCase(fetchProductDetailAsync.fulfilled, (state, action) => {
-        state.details.push(action.payload);
-        localStorageService.setProductDetails(state.details);
+        state.details = [];
+        state.details = action.payload;
         state.loading = false;
       })
       .addCase(fetchProductDetailAsync.rejected, (state, action) => {

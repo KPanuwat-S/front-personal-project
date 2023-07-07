@@ -10,6 +10,7 @@ import {
 function ShopPage() {
   const [data, setData] = useState();
   const dispatch = useDispatch();
+  useSelector
   useEffect(() => {
     dispatch(fetchProductAsync()).unwrap();
     return () => {

@@ -6,23 +6,24 @@ import CartItem from "../components/CartItem";
 import EmpytCartPage from "./EmptyCartPage";
 import CartOrder from "./CartOrder";
 import {
-  fetchItemCartFromStorage,
-  addItemToLocalStorage,
-  addItemToCartAsync,
-  deleteItemCart,
-  deleteItemFromStorage,
   removeFromCart,
+  fetchCartItemsAsync,
+  deleteItemCartAsync,
 } from "../features/productCatalog/slice/cartSlice";
 import * as localStorageService from "../utils/localStorage";
 
 function CartPage() {
   const dispatch = useDispatch();
 
-  const cartItems = useSelector((state) => state.cart.cartProducts);
-  // const cartItems = localStorageService.getCartItems();
+  useEffect(() => {
+    dispatch(fetchCartItemsAsync());
+  }, []);
+
+  const cartItems = useSelector((state) => state.cart.cartItems);
   console.log("cart items", cartItems);
   const deleteItemHandler = (id) => {
     dispatch(removeFromCart(id));
+    dispatch(deleteItemCartAsync(id));
   };
 
   const displayProduct = cartItems?.map((el) => (

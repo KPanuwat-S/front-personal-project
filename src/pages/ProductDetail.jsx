@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { redirectTo } from "../features/auth/slice/authSlice";
+import RedirectToLogin from "./RedirectToLogin";
 
 function ProductDetail() {
   const dispatch = useDispatch();
@@ -23,22 +24,22 @@ function ProductDetail() {
   const user = useSelector((state) => state.auth.user);
   const location = useLocation();
 
+  console.log("id", id);
   useEffect(() => {
-    dispatch(removeProductAsync()).unwrap();
-    dispatch(fetchProductDetailAsync(id)).unwrap();
+    dispatch(removeProductAsync());
+    dispatch(fetchProductDetailAsync(id));
     dispatch(redirectTo(location));
-
-    return () => {
-      // dispatch(removeProductAsync()).unwrap();
-    };
+    console.log("running---");
   }, []);
 
   const detailsData = useSelector((state) => state.product.details);
   // fetch from db => call api to find
 
-  const detailsDataTransformed = detailsData?.[0];
+  const [detailsDataTransformed] = detailsData;
 
-  const defaultPrice = detailsDataTransformed?.[0].price;
+  console.log("detail", detailsDataTransformed);
+
+  const defaultPrice = detailsDataTransformed?.price;
   const [price, setPrice] = useState(defaultPrice);
   const [quantity, setQuantity] = useState(1);
   const getQuantity = (quantity) => {
@@ -48,18 +49,18 @@ function ProductDetail() {
       return { ...data, quantity: quantity };
     });
   };
-  let name = detailsDataTransformed?.[0].name;
+  let name = detailsDataTransformed?.name;
 
   const [selectedProduct, setSelectedProduct] = useState({
     name: name,
-    size: detailsDataTransformed?.[0]["sizes"][0],
+    size: detailsDataTransformed?.sizes[0],
     quantity: quantity,
-    color: detailsDataTransformed?.[0].colorId,
+    color: detailsDataTransformed?.colorId,
     price: defaultPrice,
-    img: detailsDataTransformed?.[0].imgs?.[0],
+    img: detailsDataTransformed?.imgs?.[0],
     productModel: id,
     sumPrice: defaultPrice * quantity,
-    sizes: detailsDataTransformed?.[0]["sizes"],
+    sizes: detailsDataTransformed?.sizes[0],
   });
 
   // useEffect(() => {
@@ -82,22 +83,21 @@ function ProductDetail() {
   useEffect(() => {
     setSelectedProduct((prev) => {
       return {
-        ...prev,
-        id: uuidv4(),
         name: name,
-        size: selectedProduct.size,
+        size: selectedProduct.size ?? detailsDataTransformed?.sizes[0],
         quantity: quantity,
-        color: selectedProduct.color ?? detailsDataTransformed?.[0].colorId,
+        color: detailsDataTransformed?.colorId,
         price: defaultPrice,
-        img: selectedProduct.img ?? detailsDataTransformed?.[0].imgs?.[0],
+        img: detailsDataTransformed?.imgs?.[0],
+        // ?? detailsDataTransformed?.imgs?.[0],
         productModel: id,
         sumPrice: defaultPrice * quantity,
-        sizes: selectedProduct.sizes,
       };
     });
   }, [detailsData, quantity]);
 
-  let size = detailsDataTransformed?.[0]["sizes"].map((el) => {
+  console.log("selected product", selectedProduct);
+  let size = detailsDataTransformed?.sizes.map((el) => {
     return (
       <div className="flex gap-2">
         {el == 1 ? (
@@ -145,11 +145,10 @@ function ProductDetail() {
 
   const pictureChangeHandler = (e) => {
     e.preventDefault();
-    const element = detailsDataTransformed.findIndex(
-      (el) => el.colorId == e.target.id
-    );
+    const element = detailsData.findIndex((el) => el.colorId == e.target.id);
 
-    const color = detailsDataTransformed?.[`${element}`].colorId;
+    console.log("element", element);
+    const color = detailsData?.[`${element}`].colorId;
 
     setPic(element);
     setSelectedProduct((prev) => {
@@ -157,12 +156,12 @@ function ProductDetail() {
       return {
         ...data,
         color: color,
-        img: detailsDataTransformed?.[`${element}`].imgs?.[0],
+        img: detailsData?.[`${element}`].imgs?.[0],
       };
     });
   };
 
-  const colors = detailsDataTransformed?.map((el, index) => {
+  const colors = detailsData?.map((el, index) => {
     const color = el.colorId == 1 ? "black" : "white";
     const style = {
       backgroundColor: color,
@@ -190,7 +189,7 @@ function ProductDetail() {
           <div className="overflow-hidden">
             <img
               className="hover:scale-110"
-              src={detailsDataTransformed?.[`${pic}`].imgs?.[0]}
+              src={detailsData?.[`${pic}`].imgs?.[0]}
               alt=""
             />
           </div>
@@ -199,14 +198,14 @@ function ProductDetail() {
           <div className="overflow-hidden w-[175px]">
             <img
               className="hover:scale-110"
-              src={detailsDataTransformed?.[`${pic}`].imgs?.[1]}
+              src={detailsData?.[`${pic}`].imgs?.[1]}
               alt=""
             />
           </div>
           <div className="overflow-hidden w-[175px]">
             <img
               className="hover:scale-110"
-              src={detailsDataTransformed?.[`${pic}`].imgs?.[2]}
+              src={detailsData?.[`${pic}`].imgs?.[2]}
               alt=""
             />
           </div>
@@ -249,6 +248,7 @@ function ProductDetail() {
             >
               <CartForm
                 data={selectedProduct}
+                id={id}
                 setOpen={setOpen}
                 linkTo="/cart"
               ></CartForm>
@@ -263,7 +263,7 @@ function ProductDetail() {
               }}
             >
               <Link to="/authenticate">
-                <div>LOG IN</div>
+                <RedirectToLogin></RedirectToLogin>
               </Link>
             </Modal>
           )}

@@ -7,18 +7,36 @@ import {
   addItemToCartAsync,
   addItemToLocalStorage,
   addToCart,
+  calPrice,
+  calQuantity,
+  fetchCartItemsAsync,
 } from "../features/productCatalog/slice/cartSlice";
 import { Link } from "react-router-dom";
 import * as localStorageService from "../utils/localStorage/";
 
-function CartForm({ data, setOpen, linkTo }) {
-  // const [cartItemLocalStorage, setCart] = useState(
-  //   localStorageService.getCartItems()
-  // );
+function CartForm({ data, setOpen, linkTo, id }) {
   const dispatch = useDispatch();
-  const { name, price, size, img, quantity, gender, color, sumPrice } = data;
-  // const [sumPrice, setSumPrie] = useState(price * quantity);
+  const {
+    name,
+    price,
+    size,
+    img,
+    quantity,
+    gender,
+    color,
+    sumPrice,
+    productModelId,
+  } = data;
+
   console.log("data", data);
+
+  const itemToBeAdded = {
+    quantity: quantity,
+    productModelId: +id,
+    colorId: color,
+    sizeId: size,
+  };
+  console.log("itemToBeAdded", itemToBeAdded);
   const dataHandler = (e) => {
     e.preventDefault();
     const newData = { ...itemData, [e.target.name]: e.target.value };
@@ -62,24 +80,15 @@ function CartForm({ data, setOpen, linkTo }) {
         </div>
         <div className="flex">
           <div className="flex-1"></div>
-          {/* <Button
-            text="ADD TO CART"
-            width="px-5"
-            onClick={() => {
-              setOpen(false);
-              dispatch(addItemToCartAsync(data));
-            }}
-          ></Button> */}
-          {/* dispatch(addItemToCartAsync(data)) */}
+
           <Link to={linkTo}>
             <button
               onClick={() => {
                 setOpen(false);
-                console.log("test");
-                console.log("data", data);
-                // localStorageService.setCartItems(itemAdded);
-                dispatch(addToCart(data));
-                // dispatch(fetchItemCartFromStorage());
+                dispatch(addItemToCartAsync(itemToBeAdded));
+                dispatch(fetchCartItemsAsync());
+                dispatch(calPrice());
+                dispatch(calQuantity());
               }}
               className="px-5 py-2 rounded-xl text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300"
             >
