@@ -11,15 +11,22 @@ import Button from "../components/Button";
 import Modal from "../components/Modal";
 import CartForm from "../components/CartForm";
 import { v4 as uuidv4 } from "uuid";
+import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { redirectTo } from "../features/auth/slice/authSlice";
+
 function ProductDetail() {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const { id } = useParams();
   const [pic, setPic] = useState(0);
+  const user = useSelector((state) => state.auth.user);
+  const location = useLocation();
 
   useEffect(() => {
     dispatch(removeProductAsync()).unwrap();
     dispatch(fetchProductDetailAsync(id)).unwrap();
+    dispatch(redirectTo(location));
 
     return () => {
       // dispatch(removeProductAsync()).unwrap();
@@ -27,6 +34,8 @@ function ProductDetail() {
   }, []);
 
   const detailsData = useSelector((state) => state.product.details);
+  // fetch from db => call api to find
+
   const detailsDataTransformed = detailsData?.[0];
 
   const defaultPrice = detailsDataTransformed?.[0].price;
@@ -50,23 +59,43 @@ function ProductDetail() {
     img: detailsDataTransformed?.[0].imgs?.[0],
     productModel: id,
     sumPrice: defaultPrice * quantity,
+    sizes: detailsDataTransformed?.[0]["sizes"],
   });
 
+  // useEffect(() => {
+  //   setSelectedProduct((prev) => {
+  //     return {
+  //       ...prev,
+  //       id: uuidv4(),
+  //       name: name,
+  //       size: detailsDataTransformed?.[0]["sizes"][0],
+  //       quantity: quantity,
+  //       color: detailsDataTransformed?.[0].colorId,
+  //       price: defaultPrice,
+  //       img: detailsDataTransformed?.[0].imgs?.[0],
+  //       productModel: id,
+  //       sumPrice: defaultPrice * quantity,
+  //       sizes: detailsDataTransformed?.[0]["sizes"],
+  //     };
+  //   });
+  // }, [detailsData, quantity]);
   useEffect(() => {
     setSelectedProduct((prev) => {
       return {
+        ...prev,
         id: uuidv4(),
         name: name,
-        size: detailsDataTransformed?.[0]["sizes"][0],
+        size: selectedProduct.size,
         quantity: quantity,
-        color: detailsDataTransformed?.[0].colorId,
+        color: selectedProduct.color ?? detailsDataTransformed?.[0].colorId,
         price: defaultPrice,
-        img: detailsDataTransformed?.[0].imgs?.[0],
+        img: selectedProduct.img ?? detailsDataTransformed?.[0].imgs?.[0],
         productModel: id,
         sumPrice: defaultPrice * quantity,
+        sizes: selectedProduct.sizes,
       };
     });
-  }, [detailsData]);
+  }, [detailsData, quantity]);
 
   let size = detailsDataTransformed?.[0]["sizes"].map((el) => {
     return (
@@ -207,21 +236,37 @@ function ProductDetail() {
             }}
           ></Button>
         </div>
+
         <div>
-          <Modal
-            open={open}
-            title="CONFIRM CART"
-            width={35}
-            onClose={() => {
-              setOpen(false);
-            }}
-          >
-            <CartForm
-              data={selectedProduct}
-              setOpen={setOpen}
-              linkTo="/cart"
-            ></CartForm>
-          </Modal>
+          {user ? (
+            <Modal
+              open={open}
+              title="CONFIRM CART"
+              width={35}
+              onClose={() => {
+                setOpen(false);
+              }}
+            >
+              <CartForm
+                data={selectedProduct}
+                setOpen={setOpen}
+                linkTo="/cart"
+              ></CartForm>
+            </Modal>
+          ) : (
+            <Modal
+              open={open}
+              title="Login to Your Cart"
+              width={35}
+              onClose={() => {
+                setOpen(false);
+              }}
+            >
+              <Link to="/authenticate">
+                <div>LOG IN</div>
+              </Link>
+            </Modal>
+          )}
         </div>
       </div>
     </div>

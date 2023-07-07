@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import StepperControl from "../../stepper/StepperControl";
+// import StepperControl from "../../stepper/StepperControl";
 import useForm from "../../../hooks/useForm";
 import { addressRegisterSchemaValidate } from "../../validators/validateRegister";
 import Input from "../../../components/Input";
@@ -7,7 +7,8 @@ import InputErrorMessage from "../../auth/components/InputErrorMessage";
 import { PronvinceTh } from "../../../data/ProvinceTH";
 import { CityTH } from "../../../data/CityTH";
 import { DistrictTh } from "../../../data/DistrictTH";
-
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 function AddressForm({ handleClick, currentStep, steps }) {
   const [addressData, setAddressData] = useState({
     province: "",
@@ -36,7 +37,7 @@ function AddressForm({ handleClick, currentStep, steps }) {
 
   const onSubmit = async (data) => {
     try {
-      await dispatch(login(data)).unwrap();
+      await dispatch(registerAsync(data)).unwrap();
     } catch (err) {
       console.log(err);
       toast.error("Invalid email address or mobile number or password");
@@ -135,12 +136,50 @@ function AddressForm({ handleClick, currentStep, steps }) {
           />
         </div>
       </div>
-
-      <StepperControl
+      <div>
+        {" "}
+        <label htmlFor="zipCode">Address Line</label>
+        <Input
+          type="text"
+          name="addressLine"
+          id="addressLine"
+          placeHolder="Address Line"
+          onChange={selectHandler}
+          className="w-full"
+          value={addressData.addressLine}
+        />
+      </div>
+      <div className="flex gap-5 justify-center items-center">
+        <Link to="/profilePage">
+          <button
+            onClick={() => {
+              handleClick();
+            }}
+            className="text-gray-900 bg-white border border-black hover:bg-gray-800 hover:text-white ease-out duration-300 rounded-xl px-10 py-2 "
+          >
+            LATER
+          </button>
+        </Link>
+        <button
+          className="
+           text-white
+           bg-gray-800
+           hover:bg-gray-700
+           ease-in-out
+           duration-300
+           rounded-xl
+           px-10
+           py-2"
+          type="submit"
+        >
+          SUBMIT
+        </button>
+      </div>
+      {/* <StepperControl
         handleClick={handleClick}
         currentStep={currentStep}
         steps={steps}
-      />
+      /> */}
     </form>
   );
 }

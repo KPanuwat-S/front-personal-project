@@ -17,7 +17,6 @@ function AuthenticateIcon() {
   ) : (
     // </Link>
     <Link to="/authenticate">
-      {" "}
       <i class="fa-regular fa-user text-xl" role="button"></i>
     </Link>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import createSizes from "../utils/createSizes";
 import createColor from "../utils/createColor";
@@ -6,16 +6,19 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addItemToCartAsync,
   addItemToLocalStorage,
+  addToCart,
 } from "../features/productCatalog/slice/cartSlice";
 import { Link } from "react-router-dom";
 import * as localStorageService from "../utils/localStorage/";
 
 function CartForm({ data, setOpen, linkTo }) {
-  console.log(data);
+  // const [cartItemLocalStorage, setCart] = useState(
+  //   localStorageService.getCartItems()
+  // );
   const dispatch = useDispatch();
   const { name, price, size, img, quantity, gender, color, sumPrice } = data;
   // const [sumPrice, setSumPrie] = useState(price * quantity);
-  console.log(data);
+  console.log("data", data);
   const dataHandler = (e) => {
     e.preventDefault();
     const newData = { ...itemData, [e.target.name]: e.target.value };
@@ -38,7 +41,7 @@ function CartForm({ data, setOpen, linkTo }) {
         <div className="flex gap-5">
           <img className="w-[150px]" src={img} alt="" />
           <div className="flex flex-col">
-            <div className="text-gray-600 mb-5">{name.toUpperCase()}</div>
+            <div className="text-gray-600 mb-5">{name?.toUpperCase()}</div>
             <div>
               <span className="text-gray-400 font-light">SIZE: </span>{" "}
               {sizeText}
@@ -72,8 +75,10 @@ function CartForm({ data, setOpen, linkTo }) {
             <button
               onClick={() => {
                 setOpen(false);
-                dispatch(addItemToCartAsync(data));
-                dispatch(addItemToLocalStorage());
+                console.log("test");
+                console.log("data", data);
+                // localStorageService.setCartItems(itemAdded);
+                dispatch(addToCart(data));
                 // dispatch(fetchItemCartFromStorage());
               }}
               className="px-5 py-2 rounded-xl text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300"

@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "../components/Button";
+import { Link } from "react-router-dom";
 
 function FeatureSection() {
   return (
@@ -30,7 +31,11 @@ function FeatureSection() {
                 <h3 className="text-xl font-medium text-white mb-3 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.5)]">
                   Casual
                 </h3>
-                <Button primary={true} text="SHOP" />
+                <Link to="/shop">
+                  <button className="rounded-xl px-10 py-2 text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300">
+                    SHOP
+                  </button>
+                </Link>
               </div>
             </a>
           </li>
@@ -50,7 +55,11 @@ function FeatureSection() {
                   Summer
                 </h3>
 
-                <Button primary={true} text="SHOP" />
+                <Link to="/shop">
+                  <button className="rounded-xl px-10 py-2 text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300">
+                    SHOP
+                  </button>
+                </Link>
               </div>
             </a>
           </li>
@@ -67,8 +76,11 @@ function FeatureSection() {
                 <h3 className="text-xl font-medium text-white mb-3 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.5)]">
                   Street Chic
                 </h3>
-
-                <Button primary={true} text="SHOP" />
+                <Link to="/shop">
+                  <button className="rounded-xl px-10 py-2 text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300">
+                    SHOP
+                  </button>
+                </Link>
               </div>
             </a>
           </li>

@@ -2,7 +2,7 @@ import React from "react";
 import Button from "../components/Button";
 import { Link, Navigate } from "react-router-dom";
 
-function EmpytCartPage() {
+function EmpytCartPage({ linkTo, btnMessage, description }) {
   return (
     <div className="flex flex-col h-screen bg-white">
       <img
@@ -14,13 +14,13 @@ function EmpytCartPage() {
       <div className="flex items-center justify-center flex-1">
         <div className="max-w-xl px-4 py-8 mx-auto text-center">
           <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-10">
-            No Item in Your Cart
+            {description}
           </h1>
 
-          <Link to="/shop">
+          <Link to={linkTo}>
             {/* <Button primary={true} text="GO TO SHOP" /> */}
             <button className="text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300 px-5 py-2 rounded-xl">
-              GO TO SHOP
+              {btnMessage}
             </button>
           </Link>
         </div>

@@ -11,6 +11,7 @@ export default function Dropdown() {
   console.log();
   const [open, setOpen] = useState(false);
   const dropdownEl = useRef(); //return obj {current: value}
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (!dropdownEl.current.contains(e.target)) {
@@ -22,6 +23,7 @@ export default function Dropdown() {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
   return (
     <div className="relative z-50" ref={dropdownEl}>
       {/* ref = {current: document.querySelector('.relative')} */}
@@ -46,35 +48,20 @@ export default function Dropdown() {
             </Link>
 
             <hr className="border-1 border-gray-300 m-2" />
-            {/* <Link to="/authenticate"> */}
-            {/* <Navigate to="/authenticate"> */}
-            <div
-              className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-xl"
-              onClick={() => {
-                // navigate("/authenticate");
-                dispatch(logout());
-              }}
-            >
-              <div className="flex gap-2">
-                <i class="fa-solid fa-arrow-right-from-bracket text-gray-500"></i>
-                <div className="text-gray-700 text-sm">Log Out</div>
+
+            <Link to="/authenticate">
+              <div
+                className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-xl"
+                onClick={() => {
+                  dispatch(logout());
+                }}
+              >
+                <div className="flex gap-2">
+                  <i class="fa-solid fa-arrow-right-from-bracket text-gray-500"></i>
+                  <div className="text-gray-700 text-sm">Log Out</div>
+                </div>
               </div>
-            </div>
-            {/* </Navigate> */}
-            {/* </Link> */}
-            {/* </Link> */}
-            {/* <div
-            onClick={() => {
-              dispatch(logout());
-            }}
-            role="button"
-            className="flex gap-4 items-center p-2 hover:bg-gray-100 rounded-lg"
-          >
-            <div className="rounded-full bg-gray-300 h-9 w-9 flex items-center justify-center">
-              <i class="fa-solid fa-right-from-bracket"></i>
-            </div>
-            <span className="text-sm font-bold">Log Out</span>
-          </div> */}
+            </Link>
           </div>
         )}
       </div>

@@ -11,33 +11,48 @@ import {
   addItemToCartAsync,
   deleteItemCart,
   deleteItemFromStorage,
+  removeFromCart,
 } from "../features/productCatalog/slice/cartSlice";
 import * as localStorageService from "../utils/localStorage";
 
 function CartPage() {
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchItemCartFromStorage());
-  }, [localStorage.getItem("cartItems")]);
 
+  const cartItems = useSelector((state) => state.cart.cartProducts);
+  // const cartItems = localStorageService.getCartItems();
+  console.log("cart items", cartItems);
   const deleteItemHandler = (id) => {
-
-    dispatch(deleteItemCart(id));
-    dispatch(deleteItemFromStorage(id));
+    dispatch(removeFromCart(id));
   };
-  let cartItems = useSelector((state) => state.cart.cartProducts);
+
   const displayProduct = cartItems?.map((el) => (
     <CartItem data={el} deleteItemHandler={deleteItemHandler} />
   ));
-  return displayProduct?.length > 0 ? (
-    <div className="flex justify-between gap-20 mt-[120px]">
-      <div className="flex-1 flex-col gap-5">{cartItems && displayProduct}</div>
-      <div className="">
-        <CartOrder />
+
+  const user = useSelector((state) => state.auth.user);
+  if (user)
+    return displayProduct?.length > 0 ? (
+      <div className="flex justify-between gap-20 mt-[120px]">
+        <div className="flex-1 flex-col gap-5">
+          {cartItems && displayProduct}
+        </div>
+        <div className="">
+          <CartOrder />
+        </div>
       </div>
-    </div>
-  ) : (
-    <EmpytCartPage />
+    ) : (
+      <EmpytCartPage
+        linkTo="/shop"
+        btnMessage="GO TO SHOP"
+        description="No item in your cart"
+      />
+    );
+  return (
+    <EmpytCartPage
+      linkTo="/authenticate"
+      btnMessage="Login"
+      description="Login to Get Your Cart"
+    />
   );
 }
 

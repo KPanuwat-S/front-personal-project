@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Button from "./Button";
 const boldProperty = "font-bold";
 function CTA({ text, ctaText = "SHOP", primary = true, bold = undefined }) {
@@ -8,7 +9,11 @@ function CTA({ text, ctaText = "SHOP", primary = true, bold = undefined }) {
           {text} <span className={boldProperty}>{bold}</span>
         </h1>
       )}
-      <Button text={ctaText} primary={primary}></Button>
+      <Link to="/shop">
+        <button className="rounded-xl px-10 py-2 text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300">
+          SHOP
+        </button>
+      </Link>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Stepper from "../stepper/Stepper";
-import StepperControl from "../stepper/StepperControl";
+// import StepperControl from "../stepper/StepperControl";
 import GeneralForm from "./components/GeneralForm";
 import AddressForm from "./components/AddressForm";
 import PaymentForm from "./components/PaymentForm";

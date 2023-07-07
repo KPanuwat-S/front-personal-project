@@ -1,11 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as productService from "../../../api/productApi";
-
+import * as localStorageService from "../../../utils/localStorage";
 
 const initialState = {
   products: [],
   loading: false,
-  details: [],
+  details: localStorage.getItem("detailsProduct")
+    ? localStorageService.getProductDetails()
+    : [],
   error: null,
 };
 
@@ -78,6 +80,7 @@ export const productSlice = createSlice({
       })
       .addCase(fetchProductDetailAsync.fulfilled, (state, action) => {
         state.details.push(action.payload);
+        localStorageService.setProductDetails(state.details);
         state.loading = false;
       })
       .addCase(fetchProductDetailAsync.rejected, (state, action) => {

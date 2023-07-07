@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Modal from "../components/Modal";
 import CartForm from "../components/CartForm";
 import { Link } from "react-router-dom";
+import * as localStorageService from "../utils/localStorage";
+import SuccessPayment from "./ConfirmOrderMal";
+import ConfirmOrderModal from "./ConfirmOrderMal";
+
+import { removeFromCart } from "../features/productCatalog/slice/cartSlice";
+import { useLocation } from "react-router-dom";
 function CartOrder() {
   const [price, setPrice] = useState(0);
   const [unit, setUnit] = useState(1);
   const [open, setOpen] = useState(false);
-  const productsInCart = useSelector((state) => state.cart.cartProducts);
+  // const productsInCart = useSelector((state) => state.cart.cartProducts);
+  const productsInCart = localStorageService.getCartItems();
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     const calPrice = productsInCart.reduce((acc, el) => {
       acc += el.price * el.quantity;
@@ -23,6 +30,8 @@ function CartOrder() {
     setUnit((unit) => (unit = calQuantity));
   }, [productsInCart]);
 
+  const location = useLocation();
+  console.log("location in cart order", location);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   return (
     <div className="rounded-lg w-[400px] shadow-[0_0_15px_rgb(0_0_0_/0.2)] flex flex-col gap-10 overflow-hidden ">
@@ -56,14 +65,20 @@ function CartOrder() {
           }}
         >
           {isAuthenticated ? (
-            <Link to="/successPayment">
-              <button>CONFIRM ORDER</button>
-            </Link>
+            <ConfirmOrderModal
+              price={price}
+              unit={unit}
+              onClose={() => {
+                setOpen(false);
+              }}
+            />
           ) : (
             <Link to="/authenticate">
-              <button className="px-5 py-2 rounded-xl text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300">
-                LOGIN TO ORDER
-              </button>
+              <div className="text-center">
+                <button className="px-5 py-2 rounded-xl text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300">
+                  LOGIN TO ORDER
+                </button>
+              </div>
             </Link>
           )}
         </Modal>

@@ -3,7 +3,11 @@ import ColorDot from "./components/ColorDot";
 import Pirce from "./components/Pirce";
 import { Link } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
-
+import { useDispatch } from "react-redux";
+import {
+  addToLike,
+  removeFromLike,
+} from "../../features/productCatalog/slice/cartSlice";
 function ProductCard({ productInfo }) {
   const [ref, inView] = useInView({
     triggerOnce: true, // Animation triggers only once when element comes into view
@@ -30,8 +34,19 @@ function ProductCard({ productInfo }) {
   //     2,
   //     1
   // ]
+  const dispatch = useDispatch();
   const [heart, setHeart] = useState(false);
   const [picSource, setPicSource] = useState(imgs[1]);
+  const likeHandler = () => {
+    if (heart) {
+      dispatch(removeFromLike(productInfo.id));
+      setHeart(false);
+      console.log("liked");
+    } else {
+      dispatch(addToLike(productInfo));
+      setHeart(true);
+    }
+  };
   return (
     <div ref={ref} className={animationClasses}>
       <div className="relative w-[270px]">
@@ -60,7 +75,7 @@ function ProductCard({ productInfo }) {
           <i
             class="fa-solid fa-heart text-red-500 absolute top-3 right-3"
             onClick={() => {
-              setHeart(!heart);
+              likeHandler();
             }}
             role="button"
           ></i>
@@ -68,7 +83,7 @@ function ProductCard({ productInfo }) {
           <i
             class="fa-regular fa-heart absolute top-3 right-3 hover:text-red-500"
             onClick={() => {
-              setHeart(!heart);
+              likeHandler();
             }}
             role="button"
           />

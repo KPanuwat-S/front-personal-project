@@ -1,12 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as authService from "../../../api/authApi";
 import { setAccessToken, removeAccessToken } from "../../../utils/localStorage";
+import { useNavigate } from "react-router-dom";
 const initialState = {
   isAuthenticated: false,
   error: null,
   loading: false,
   user: null,
   initial: true,
+  location: null,
 };
 
 export const registerAsync = createAsyncThunk(
@@ -19,6 +21,17 @@ export const registerAsync = createAsyncThunk(
       return restFetchMe.data.user;
     } catch (err) {
       return thunkApi.rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
+export const createAdress = createAsyncThunk(
+  "auth/createAdress",
+  async (input, thunkApi) => {
+    try {
+      const res = await authService.createAdress;
+    } catch (err) {
+      err;
     }
   }
 );
@@ -49,13 +62,19 @@ export const fetchMe = createAsyncThunk("auth/fetchMe", async (_, thunkApi) => {
 });
 
 export const logout = createAsyncThunk("auth/logout", async () => {
+  // const navigate = useNavigate();
   removeAccessToken();
+  // navigate("/authenticate");
 });
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    redirectTo: (state, action) => {
+      state.location = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(logout.fulfilled, (state) => {
@@ -96,4 +115,5 @@ export const authSlice = createSlice({
   },
 });
 
+export const { redirectTo } = authSlice.actions;
 export default authSlice.reducer;

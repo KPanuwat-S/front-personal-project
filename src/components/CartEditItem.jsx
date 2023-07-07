@@ -11,20 +11,21 @@ import {
   deleteItemCart,
   deleteItemFromStorage,
   editItemCart,
+  editItemFromCart,
 } from "../features/productCatalog/slice/cartSlice";
 import { v4 as uuidv4 } from "uuid";
 function CartEditItem({ id, setOpen }) {
-  // Handle Modal
-  // const [open, setOpen] = useState(false);
+  const data = useSelector((state) => state.cart.cartProducts);
+  const detailsData = useSelector((state) => state.product.details);
 
   // Get Data of Edited Item
   const dispatch = useDispatch();
-  const data = localStorageService.getCartItems();
   const editData = data.find((el) => el.id == id);
 
   // Get Data Set of Model
-  const detailsData = useSelector((state) => state.product.details);
   const detailsDataTransformed = detailsData?.[0];
+  console.log("detailsData", detailsData);
+  console.log("transform", detailsDataTransformed);
 
   // Retrieve Value of Data
   const { name, price, size, img, quantity, gender, color } = editData;
@@ -32,18 +33,21 @@ function CartEditItem({ id, setOpen }) {
   const [editPrice, seteditPrice] = useState(price);
   const [editQuantity, setEditQuantity] = useState(quantity);
 
+  console.log("edti data", editData);
   // Size from DB
+  console.log("detaildatatransform", detailsDataTransformed);
   const sizes = detailsDataTransformed?.[0]["sizes"].map((el) => el);
-
+  console.log("sizes", sizes);
   // Size from Front End
   const [editSize, setEditSize] = useState(size);
   const [editColor, setEditColor] = useState(color);
+  const [editImg, setEditImg] = useState(img);
   // const sizeText = createSizes(size);
-  const colorVText = createColor(color);
+  const colorText = createColor(color);
 
   // Handle Color
   const style = {
-    backgroundColor: colorVText,
+    backgroundColor: colorText,
   };
   const colorStyle = (
     <div>
@@ -63,7 +67,17 @@ function CartEditItem({ id, setOpen }) {
         sumPrice: price * editQuantity,
       };
     });
-  }, [editSize, editColor, editPrice, detailsDataTransformed, editQuantity]);
+  }, [
+    editSize,
+    img,
+    editColor,
+    editPrice,
+    detailsDataTransformed,
+    editQuantity,
+  ]);
+
+  console.log("edit data final", editDataFinal);
+  console.log("editcolor", editColor);
   // Handle Picture
   const [editPic, setPic] = useState(0);
 
@@ -75,8 +89,11 @@ function CartEditItem({ id, setOpen }) {
     const element = detailsDataTransformed.findIndex(
       (el) => el.colorId == e.target.id
     );
-    const color = detailsDataTransformed?.[`${element}`].colorId;
-    setPic(element);
+    setEditColor(detailsDataTransformed?.[`${element}`].colorId);
+
+    setEditImg(detailsDataTransformed?.[`${element}`].imgs?.[0]);
+
+    // setEditColor(e.target.value);
   };
   const colors = detailsDataTransformed?.map((el, index) => {
     const color = el.colorId == 1 ? "black" : "white";
@@ -88,7 +105,7 @@ function CartEditItem({ id, setOpen }) {
         <div
           id={el.colorId}
           name="color"
-          value=""
+          value={el.colorId}
           className="h-5 w-5 border"
           style={style}
           role="button"
@@ -99,7 +116,9 @@ function CartEditItem({ id, setOpen }) {
   });
 
   const payload = { id: id, data: editDataFinal };
-
+  const editItemCartHandler = () => {
+    dispatch(editItemFromCart(payload));
+  };
   // UI
   return (
     <div>
@@ -107,15 +126,23 @@ function CartEditItem({ id, setOpen }) {
         <div className="flex gap-5">
           <img
             className="w-[150px]"
-            src={detailsDataTransformed?.[`${editPic}`].imgs?.[0]}
-            // src={img}
+            src={editImg}
+            // src={detailsDataTransformed?.[`${editPic}`].imgs?.[0]}
             alt=""
           />
           <div className="flex flex-col">
             <div className="text-gray-600 mb-5">{name.toUpperCase()}</div>
             <div>
               <span className="text-gray-400 font-light">SIZE: </span>{" "}
-              <select name="size" id="size">
+              <select
+                name="size"
+                id="size"
+                onChange={(e) => {
+                  console.log("change size is working");
+                  console.log("target value size ", e.target.value);
+                  setEditSize(+e.target.value);
+                }}
+              >
                 {sizes.map((el) => {
                   const allSizeText = createSizes(el);
                   const selectedSizeText = createSizes(size);
@@ -155,9 +182,11 @@ function CartEditItem({ id, setOpen }) {
           <div className="flex-1"></div>
 
           <button
+            type="submit"
             onClick={() => {
               setOpen(false);
-              dispatch(editItemCart(payload));
+              editItemCartHandler();
+              // dispatch(editItemCart(payload));
             }}
             className="px-5 py-2 rounded-xl text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300"
           >

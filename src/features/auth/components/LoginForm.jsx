@@ -6,7 +6,7 @@ import useForm from "../../../hooks/useForm";
 import validateLogin from "../../validators/validateLogin";
 import InputErrorMessage from "./InputErrorMessage";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginAsync } from "../slice/authSlice";
 import ErrorAlert from "../../../components/ErrorAlert";
 import { useState } from "react";
@@ -27,6 +27,9 @@ function LoginForm() {
     try {
       console.log("onSubmit");
       await dispatch(loginAsync(data)).unwrap();
+      toast.success(`Welcome !`, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
     } catch (err) {
       setShownError(true);
       seterrorMessage(err);

@@ -17,10 +17,12 @@ import ProductDetail from "../pages/ProductDetail";
 import MyProfilePage from "../pages/MyProfilePage";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import RedirectRoute from "../components/RedirectRoute";
+import RedirectRoute from "./RedirectRoute";
 import EmpytCartPage from "../pages/EmptyCartPage";
-import SuccessPayment from "../pages/SuccessPayment";
+// import SuccessPayment from "../pages/SuccessPayment";
 import ProtectedRoute from "./ProtectedRoute";
+import AddressForm from "../features/register/components/AddressForm";
+import SuccessPayment from "../pages/SuccessPayment";
 
 // ManJeans
 function Router() {
@@ -72,6 +74,7 @@ function Router() {
           path: "/register",
           element: <RegisterPage />,
         },
+        { path: "/addressPage", element: <AddressForm /> },
         { path: "/emptyCart", element: <EmpytCartPage /> },
         { path: "/products/:id", element: <ProductDetail /> },
       ],

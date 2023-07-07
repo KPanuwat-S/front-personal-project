@@ -3,8 +3,11 @@ import PageName from "../components/PageName";
 import { useSelector } from "react-redux";
 import UserInformationBox from "../components/UserInformationBox";
 import { getAccessToken } from "../utils/localStorage";
-
+import { toast } from "react-toastify";
+import MyPurchase from "../components/MyPurchase";
+// MyPurchase
 function MyProfilePage() {
+  const [open, setOpen] = useState(false);
   const user = useSelector((state) => state.auth.user);
   const name = user.firstName + " " + user.lastName;
 
@@ -35,7 +38,7 @@ function MyProfilePage() {
           <UserInformationBox text="Payment Information" />
         </div>
         <div className="flex-1">
-          <h2 className="text-l font-semibold">My Purchase</h2>
+          <MyPurchase></MyPurchase>
         </div>
       </div>
     </div>

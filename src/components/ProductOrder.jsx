@@ -8,12 +8,11 @@ import QuantityInput from "./QuantityInput";
 import Modal from "./Modal";
 import CartEditItem from "./CartEditItem";
 
-function CartItem({ data, deleteItemHandler }) {
+function ProductOrder({ data }) {
   const dispatch = useDispatch();
   const { id, name, price, size, img, quantity, gender, color } = data;
   // console.log("id from cartitem", id);
   // console.log(data);
-  console.log("data", data);
   const dataHandler = (e) => {
     e.preventDefault();
     const newData = { ...itemData, [e.target.name]: e.target.value };
@@ -35,9 +34,9 @@ function CartItem({ data, deleteItemHandler }) {
     <div>
       <div className="flex flex-col gap-5">
         <div className="flex gap-5">
-          <img className="w-[150px]" src={img} alt="" />
+          <img className="w-[100px]" src={img} alt="" />
           <div className="flex flex-col">
-            <div className="text-gray-600 mb-5">{name?.toUpperCase()}</div>
+            <div className="text-gray-600 mb-5">{name.toUpperCase()}</div>
             <div>
               <span className="text-gray-400 font-light">SIZE: </span>{" "}
               {sizeText}
@@ -68,32 +67,11 @@ function CartItem({ data, deleteItemHandler }) {
                 role="button"
                 className="flex gap-2 items-center"
               >
-                <i class="fa-regular fa-pen-to-square text-gray-500 text-sm "></i>
-                <p className="text-gray-500 font-light text-sm hover:text-gray-800 hover:underline">
-                  EDIT
+                <p className="text-yellow-500 font-light text-sm hover:text-yellow-700 hover:underline">
+                  ON TRACK
                 </p>
               </div>
-              <div>
-                {" "}
-                <Modal
-                  open={open}
-                  title="EDIT ITEM"
-                  width={35}
-                  onClose={() => {
-                    setOpen(false);
-                  }}
-                >
-                  <CartEditItem setOpen={setOpen} id={id}></CartEditItem>
-                </Modal>
-              </div>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  deleteItemHandler(id);
-                }}
-              >
-                DELETE
-              </button>
+              <div></div>
             </div>
           </div>
         </div>
@@ -103,4 +81,4 @@ function CartItem({ data, deleteItemHandler }) {
   );
 }
 
-export default CartItem;
+export default ProductOrder;
