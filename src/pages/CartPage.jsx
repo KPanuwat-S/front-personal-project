@@ -11,27 +11,50 @@ import {
   deleteItemCartAsync,
 } from "../features/productCatalog/slice/cartSlice";
 import * as localStorageService from "../utils/localStorage";
+import Loading from "../components/Loading";
 
 function CartPage() {
   const dispatch = useDispatch();
+  const loading = useSelector((state) => state.cart.loading);
+  const [fetch, setFetch] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     dispatch(fetchCartItemsAsync());
-  }, []);
+    console.log("set fetch running");
+  }, [fetch]);
 
-  const cartItems = useSelector((state) => state.cart.cartItems);
-  console.log("cart items", cartItems);
+  const cartState = useSelector((state) => state.cart.cartItems);
+
   const deleteItemHandler = (id) => {
     dispatch(removeFromCart(id));
     dispatch(deleteItemCartAsync(id));
   };
 
-  const displayProduct = cartItems?.map((el) => (
-    <CartItem data={el} deleteItemHandler={deleteItemHandler} />
+  const [cartItems, setCartItems] = useState(cartState);
+  useEffect(() => {
+    if (cartState !== null) setCartItems(cartState);
+  }, [cartState]);
+
+  console.log("cartItems", cartItems);
+  const displayProduct = cartItems.map((el) => (
+    <CartItem
+      fetch={fetch}
+      setFetch={setFetch}
+      data={el}
+      deleteItemHandler={deleteItemHandler}
+    />
   ));
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
+  }, []);
 
   const user = useSelector((state) => state.auth.user);
-  if (user)
+
+  if (isLoading) return <Loading></Loading>;
+  if (user) {
     return displayProduct?.length > 0 ? (
       <div className="flex justify-between gap-20 mt-[120px]">
         <div className="flex-1 flex-col gap-5">
@@ -41,6 +64,8 @@ function CartPage() {
           <CartOrder />
         </div>
       </div>
+    ) : isLoading ? (
+      <Loading></Loading>
     ) : (
       <EmpytCartPage
         linkTo="/shop"
@@ -48,6 +73,7 @@ function CartPage() {
         description="No item in your cart"
       />
     );
+  }
   return (
     <EmpytCartPage
       linkTo="/authenticate"

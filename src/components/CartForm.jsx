@@ -13,6 +13,7 @@ import {
 } from "../features/productCatalog/slice/cartSlice";
 import { Link } from "react-router-dom";
 import * as localStorageService from "../utils/localStorage/";
+import { useNavigate } from "react-router-dom";
 
 function CartForm({ data, setOpen, linkTo, id }) {
   const dispatch = useDispatch();
@@ -28,6 +29,8 @@ function CartForm({ data, setOpen, linkTo, id }) {
     productModelId,
   } = data;
 
+  const detailItem = useSelector((state) => state.cart.detailItem);
+  console.log("detail in cart form", detailItem);
   console.log("data", data);
 
   const itemToBeAdded = {
@@ -36,7 +39,16 @@ function CartForm({ data, setOpen, linkTo, id }) {
     colorId: color,
     sizeId: size,
   };
+  const navigate = useNavigate();
   console.log("itemToBeAdded", itemToBeAdded);
+  const addItemsToCartHandler = async () => {
+    await dispatch(addItemToCartAsync(itemToBeAdded)).unwrap();
+    await dispatch(fetchCartItemsAsync()).unwrap();
+    dispatch(calPrice());
+    dispatch(calQuantity());
+    setOpen(false);
+    navigate("/cart");
+  };
   const dataHandler = (e) => {
     e.preventDefault();
     const newData = { ...itemData, [e.target.name]: e.target.value };
@@ -47,6 +59,7 @@ function CartForm({ data, setOpen, linkTo, id }) {
   const style = {
     backgroundColor: colorText,
   };
+
   const colorStyle = (
     <div>
       <div className="h-4 w-4 border" style={style}></div>
@@ -81,20 +94,14 @@ function CartForm({ data, setOpen, linkTo, id }) {
         <div className="flex">
           <div className="flex-1"></div>
 
-          <Link to={linkTo}>
-            <button
-              onClick={() => {
-                setOpen(false);
-                dispatch(addItemToCartAsync(itemToBeAdded));
-                dispatch(fetchCartItemsAsync());
-                dispatch(calPrice());
-                dispatch(calQuantity());
-              }}
-              className="px-5 py-2 rounded-xl text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300"
-            >
-              ADD TO CART
-            </button>
-          </Link>
+          {/* <Link to={linkTo}> */}
+          <button
+            onClick={addItemsToCartHandler}
+            className="px-5 py-2 rounded-xl text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300"
+          >
+            ADD TO CART
+          </button>
+          {/* </Link> */}
         </div>
       </div>
     </div>

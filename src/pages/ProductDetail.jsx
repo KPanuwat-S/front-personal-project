@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { redirectTo } from "../features/auth/slice/authSlice";
 import RedirectToLogin from "./RedirectToLogin";
+import createColor from "../utils/createColor";
 
 function ProductDetail() {
   const dispatch = useDispatch();
@@ -49,49 +50,41 @@ function ProductDetail() {
       return { ...data, quantity: quantity };
     });
   };
-  let name = detailsDataTransformed?.name;
+
+  console.log("detailData", detailsData);
+  console.log("detailDataTransForm", detailsDataTransformed);
 
   const [selectedProduct, setSelectedProduct] = useState({
-    name: name,
+    name: detailsDataTransformed?.name,
     size: detailsDataTransformed?.sizes[0],
     quantity: quantity,
-    color: detailsDataTransformed?.colorId,
+    color: detailsData[0]?.colorId,
     price: defaultPrice,
-    img: detailsDataTransformed?.imgs?.[0],
+    img: detailsData[0]?.imgs[0],
     productModel: id,
     sumPrice: defaultPrice * quantity,
     sizes: detailsDataTransformed?.sizes[0],
   });
 
-  // useEffect(() => {
-  //   setSelectedProduct((prev) => {
-  //     return {
-  //       ...prev,
-  //       id: uuidv4(),
-  //       name: name,
-  //       size: detailsDataTransformed?.[0]["sizes"][0],
-  //       quantity: quantity,
-  //       color: detailsDataTransformed?.[0].colorId,
-  //       price: defaultPrice,
-  //       img: detailsDataTransformed?.[0].imgs?.[0],
-  //       productModel: id,
-  //       sumPrice: defaultPrice * quantity,
-  //       sizes: detailsDataTransformed?.[0]["sizes"],
-  //     };
-  //   });
-  // }, [detailsData, quantity]);
   useEffect(() => {
     setSelectedProduct((prev) => {
       return {
         name: name,
-        size: selectedProduct.size ?? detailsDataTransformed?.sizes[0],
+        size: detailsDataTransformed?.sizes[0],
         quantity: quantity,
-        color: detailsDataTransformed?.colorId,
+        color: selectedProduct.color ?? detailsData[0]?.colorId,
         price: defaultPrice,
-        img: detailsDataTransformed?.imgs?.[0],
-        // ?? detailsDataTransformed?.imgs?.[0],
+        img: selectedProduct.img ?? detailsData[0]?.imgs[0],
         productModel: id,
         sumPrice: defaultPrice * quantity,
+        // name: name,
+        // size: selectedProduct.size,
+        // quantity: quantity,
+        // color: selectedProduct.color,
+        // price: defaultPrice,
+        // img: selectedProduct.img,
+        // productModel: id,
+        // sumPrice: defaultPrice * quantity,
       };
     });
   }, [detailsData, quantity]);
@@ -105,7 +98,7 @@ function ProductDetail() {
             type="radio"
             value={el}
             name="size"
-            id={el}
+            id={`size ${el}`}
             className="peer"
             defaultChecked
             onClick={(e) => {
@@ -120,7 +113,7 @@ function ProductDetail() {
             type="radio"
             value={el}
             name="size"
-            id={el}
+            id={`size ${el}`}
             className="peer"
             onClick={(e) => {
               setSelectedProduct((prev) => {
@@ -132,7 +125,7 @@ function ProductDetail() {
         )}
         <div className="peer-checked:bg-gray-100 rounded-xl">
           <label
-            htmlFor={el}
+            htmlFor={`size ${el}`}
             className=" w-[120px] px-3 py-2 hover:bg-gray-100 rounded-xl block text-gray-600 font-light"
             role="button"
           >
@@ -142,7 +135,6 @@ function ProductDetail() {
       </div>
     );
   });
-
   const pictureChangeHandler = (e) => {
     e.preventDefault();
     const element = detailsData.findIndex((el) => el.colorId == e.target.id);
@@ -162,7 +154,7 @@ function ProductDetail() {
   };
 
   const colors = detailsData?.map((el, index) => {
-    const color = el.colorId == 1 ? "black" : "white";
+    const color = createColor(el.colorId);
     const style = {
       backgroundColor: color,
     };
@@ -213,7 +205,9 @@ function ProductDetail() {
       </div>
 
       <div className="flex flex-col gap-5 w-[450px]">
-        <p>{name.toUpperCase()}</p>
+        <div className="flex">
+          <p>{name.toUpperCase()}</p>
+        </div>
         <hr />
         <p className="text-gray-500 font-light">COLOR</p>
         <div className="flex gap-4">{colors}</div>

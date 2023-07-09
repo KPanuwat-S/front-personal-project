@@ -1,24 +1,22 @@
 import { useDispatch, useSelector } from "react-redux";
-import * as localStorageService from "../utils/localStorage";
-import { Link } from "react-router-dom";
+
 import createSizes from "../utils/createSizes";
 import createColor from "../utils/createColor";
 import { useEffect, useState } from "react";
 import QuantityInput from "./QuantityInput";
 import {
-  addItemToCartAsync,
-  addItemToLocalStorage,
-  deleteItemFromStorage,
-  editItemCart,
-  editItemFromCart,
+  editItemCartAsync,
+  fetchCartItemsAsync,
+  updateCartItem,
 } from "../features/productCatalog/slice/cartSlice";
-import { v4 as uuidv4 } from "uuid";
-function CartEditItem({ id, setOpen, productModelId }) {
+import Loading from "./Loading";
+
+function CartEditItem({ id, setOpen, productModelId, fetch, setFetch }) {
   const data = useSelector((state) => state.cart.cartItems);
   const dispatch = useDispatch();
 
-  console.log("productModelId", productModelId);
   const detailsData = useSelector((state) => state.product.details);
+  const loading = useSelector((state) => state.cart.loading);
   // Get Data of Edited Item
 
   const editData = data.find((el) => el.id == id);
@@ -32,11 +30,8 @@ function CartEditItem({ id, setOpen, productModelId }) {
   const [editPrice, seteditPrice] = useState(price);
   const [editQuantity, setEditQuantity] = useState(quantity);
 
-  console.log("edti data", editData);
-  // Size from DB
-  console.log("detaildatatransform", detailsDataTransformed);
   const sizes = detailsDataTransformed?.["sizes"].map((el) => el);
-  console.log("sizes", sizes);
+
   // Size from Front End
   const [editSize, setEditSize] = useState(size);
   const [editColor, setEditColor] = useState(color);
@@ -75,8 +70,6 @@ function CartEditItem({ id, setOpen, productModelId }) {
     editQuantity,
   ]);
 
-  console.log("edit data final", editDataFinal);
-  console.log("editcolor", editColor);
   // Handle Picture
   const [editPic, setPic] = useState(0);
 
@@ -85,7 +78,7 @@ function CartEditItem({ id, setOpen, productModelId }) {
   };
   const pictureChangeHandler = (e) => {
     e.preventDefault();
-    console.log("detailsData", detailsData);
+
     const element = detailsData.findIndex((el) => el.colorId == e.target.id);
     setEditColor(detailsData?.[`${element}`].colorId);
 
@@ -94,7 +87,7 @@ function CartEditItem({ id, setOpen, productModelId }) {
     // setEditColor(e.target.value);
   };
   const colors = detailsData?.map((el, index) => {
-    const color = el.colorId == 1 ? "black" : "white";
+    const color = createColor(el.colorId);
     const style = {
       backgroundColor: color,
     };
@@ -114,10 +107,26 @@ function CartEditItem({ id, setOpen, productModelId }) {
   });
 
   const payload = { id: id, data: editDataFinal };
-  const editItemCartHandler = () => {
-    // dispatch(editItemFromCart(payload));
+
+  // const editItemCartHandler = async () => {
+  //   await dispatch(editItemCartAsync(payload)).unwrap();
+  //   await dispatch(fetchCartItemsAsync()).unwrap();
+  // };
+
+  const editItemCartHandler = async () => {
+    dispatch(editItemCartAsync(payload));
+    dispatch(updateCartItem(editDataFinal));
+    window.location.reload();
+    setOpen(false);
+    setFetch(!fetch);
   };
+
+  // useEffect(() => {
+  //   dispatch(fetchCartItemsAsync());
+  // }, [fetch]);
   // UI
+
+  if (loading) return <Loading></Loading>;
   return (
     <div>
       <div className="flex flex-col gap-5">
@@ -161,7 +170,7 @@ function CartEditItem({ id, setOpen, productModelId }) {
             <div className="flex gap-2 items-center">
               <span className="text-gray-400 font-light">COLOR: </span> {colors}
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 mt-4 mb-4">
               <span className="text-gray-400 font-light">QUANTITY: </span>{" "}
               <QuantityInput
                 preValue={quantity}
@@ -180,13 +189,7 @@ function CartEditItem({ id, setOpen, productModelId }) {
           <div className="flex-1"></div>
 
           <button
-            type="submit"
-            onClick={() => {
-              setOpen(false);
-              editItemCartHandler();
-              console.log("editDataFinal", editDataFinal);
-              // dispatch(editItemCart(payload));
-            }}
+            onClick={editItemCartHandler}
             className="px-5 py-2 rounded-xl text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300"
           >
             CONFIRM

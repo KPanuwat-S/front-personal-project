@@ -3,13 +3,13 @@ import { useSelector } from "react-redux";
 import * as localStorageService from "../utils/localStorage";
 function CartIcon() {
   // const [redDot, setRedDot] = useState(false);
-  // const hasItems = useSelector((state) => state.cart.hasItems);
-  const items = localStorageService.getCartItems()?.length;
+  const hasItems = useSelector((state) => state.cart.cartItems);
+
   // useEffect(() => {
   //   setRedDot(!!hasItems);
   // }, [items]);
 
-  return items > 0 ? (
+  return hasItems.length > 0 ? (
     <div className="relative">
       <svg
         viewBox="0 0 1024 1024"

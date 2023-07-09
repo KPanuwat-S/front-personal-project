@@ -8,6 +8,7 @@ const initialState = {
   hasItems: false,
   likedProducts: [],
   orderProducts: [],
+  loading: false,
 };
 
 // export const addCartProductAsync = createAsyncThunk(
@@ -78,17 +79,6 @@ export const deleteItemFromStorage = createAsyncThunk(
   }
 );
 
-export const editItemCart = createAsyncThunk(
-  "cart/editItemCart",
-  async (input, thunkApi) => {
-    try {
-      return input;
-    } catch (error) {
-      return thunkApi.rejectWithValue(err.response.data);
-    }
-  }
-);
-
 // ------ Refactor
 export const fetchCartItemsAsync = createAsyncThunk(
   "cart/fetchCartItemsAsync",
@@ -102,11 +92,36 @@ export const fetchCartItemsAsync = createAsyncThunk(
     }
   }
 );
+export const editItemCartAsync = createAsyncThunk(
+  "cart/editItemCartAsync",
+  async (input, thunkApi) => {
+    try {
+      console.log("input edit", input);
+      await cartService.editItemInCart(input.id, input.data);
+      return res;
+    } catch (err) {
+      return thunkApi.rejectWithValue(err.response.data);
+    }
+  }
+);
+
+// export const updateCartItem = createAsyncThunk(
+//   "cart/updateCartItem",
+//   async (input, thunkApi) => {
+//     return input;
+//   }
+// );
 
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    updateCartItem(state, action) {
+      const editItem = action.payload;
+      console.log("edititem", editItem);
+      const index = state.cartItems.findIndex((el) => el.id == editItem.id);
+      state.cartItems.splice(index, 1, editItem);
+    },
     addToCart(state, action) {
       state.cartItems.unshift(action.payload);
     },
@@ -178,7 +193,23 @@ export const cartSlice = createSlice({
       .addCase(deleteItemCartAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(editItemCartAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(editItemCartAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(editItemCartAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
+    // .addCase(updateCartItem.fulfilled, (state, action) => {
+    //   const editItem = action.payload;
+    //   console.log("edititem", editItem);
+    //   const index = state.cartItems.findIndex((el) => el.id == editItem.id);
+    //   state.cartItems.splice(index, 1, editItem);
+    // });
   },
 });
 
@@ -191,5 +222,6 @@ export const {
   confirmCart,
   calPrice,
   calQuantity,
+  updateCartItem,
 } = cartSlice.actions;
 export default cartSlice.reducer;

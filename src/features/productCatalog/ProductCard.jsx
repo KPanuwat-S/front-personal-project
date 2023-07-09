@@ -8,6 +8,7 @@ import {
   addToLike,
   removeFromLike,
 } from "../../features/productCatalog/slice/cartSlice";
+import createColor from "../../utils/createColor";
 function ProductCard({ productInfo }) {
   const [ref, inView] = useInView({
     triggerOnce: true, // Animation triggers only once when element comes into view
@@ -17,9 +18,13 @@ function ProductCard({ productInfo }) {
 
   const { id, name, description, discount, price, color, imgs } = productInfo;
   const displayColor = color.map((el) => {
-    const color = el == "1" ? "black" : "white";
+    const color = createColor(el);
     console.log(color);
-    const colorProperty = `bg-${color}`;
+    let colorProperty;
+    if (color == "black" || color == "white") {
+      colorProperty = `bg-${color}`;
+    } else colorProperty = `bg-${color}-400`;
+
     return <ColorDot color={colorProperty} />;
   });
   // "id": 1,
@@ -36,7 +41,7 @@ function ProductCard({ productInfo }) {
   // ]
   const dispatch = useDispatch();
   const [heart, setHeart] = useState(false);
-  const [picSource, setPicSource] = useState(imgs[1]);
+  const [picSource, setPicSource] = useState(imgs[0]);
   const likeHandler = () => {
     if (heart) {
       dispatch(removeFromLike(productInfo.id));
@@ -57,10 +62,10 @@ function ProductCard({ productInfo }) {
               src={picSource}
               alt="product-picture"
               onMouseOver={() => {
-                setPicSource(imgs[2]);
+                setPicSource(imgs[1]);
               }}
               onMouseOut={() => {
-                setPicSource(imgs[1]);
+                setPicSource(imgs[0]);
               }}
               className="object-cover"
             />

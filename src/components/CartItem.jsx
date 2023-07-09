@@ -9,7 +9,7 @@ import Modal from "./Modal";
 import CartEditItem from "./CartEditItem";
 import { fetchProductDetailAsync } from "../features/productCatalog/slice/productSlice";
 
-function CartItem({ data, deleteItemHandler }) {
+function CartItem({ data, deleteItemHandler, fetch, setFetch }) {
   const dispatch = useDispatch();
   const { id, name, price, size, imgs, quantity, productModelId, color } = data;
 
@@ -93,6 +93,8 @@ function CartItem({ data, deleteItemHandler }) {
                     setOpen={setOpen}
                     id={id}
                     productModelId={productModelId}
+                    fetch={fetch}
+                    setFetch={setFetch}
                   ></CartEditItem>
                 </Modal>
               </div>

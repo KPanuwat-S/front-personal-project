@@ -10,7 +10,7 @@ function MyPurchase() {
   const displayProduct = cartItems?.map((el) => <ProductOrder data={el} />);
   return (
     <div>
-      <p className="font-bold"> MyPurchase</p>
+      <p className="font-bold"> My Purchase</p>
       <div className="mt-5">{displayProduct}</div>
     </div>
   );

@@ -25,7 +25,7 @@ function ManPage() {
   const navigation = category.map((el, index) => {
     return (
       <div className="flex justify-evenly w-20 gap-4 mt-5" key={el.id}>
-        <NavLink
+        <div
           className={({ isActive }) => {
             const activeProperty = isActive ? "font-regular" : "font-light ";
             return createClasses(defaultProperty, activeProperty);
@@ -34,17 +34,17 @@ function ManPage() {
           onClick={() => {
             clickHandler(el);
           }}
-          to={el.href}
         >
           {el.text}
-        </NavLink>
+        </div>
       </div>
     );
   });
   return (
     <div>
       <div className="flex">{navigation}</div>
-      <div className="mt-5">{<Navigate to={content} />}</div>
+      <div></div>
+      {/* <div className="mt-5">{<Navigate to={content} />}</div> */}
     </div>
   );
 }

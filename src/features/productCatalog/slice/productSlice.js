@@ -6,6 +6,7 @@ const initialState = {
   products: [],
   loading: false,
   details: [],
+  selectedItem: {},
   error: null,
 };
 

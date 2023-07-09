@@ -13,14 +13,14 @@ function ConfirmOrderModal({ price, unit, onClose }) {
 
   return (
     <div className="">
-      <div className="">
-        <p className="text-center"></p>
+      <div className="text-center flex flex-col gap-5 mt-10">
+        <i class="fa-solid fa-cart-shopping fa-2xl mb-5"></i>
         <p>
           <span className="font-bold text-gray-500">ITEMS ORDERED: </span>
           {unit}
         </p>
         <p>
-          <span className="font-bold text-gray-500">TOTAL PRICED:</span> {price}
+          <span className="font-bold text-gray-500">TOTAL PRICE:</span> {price}
         </p>
         <div className="text-center mt-10">
           {" "}

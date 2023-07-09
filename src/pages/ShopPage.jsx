@@ -6,11 +6,12 @@ import {
   fetchProductAsync,
   removeProductAsync,
 } from "../features/productCatalog/slice/productSlice";
+import Loading from "../components/Loading";
 
 function ShopPage() {
   const [data, setData] = useState();
   const dispatch = useDispatch();
-  useSelector
+  const loading = useSelector((state) => state.product.loading);
   useEffect(() => {
     dispatch(fetchProductAsync()).unwrap();
     return () => {
@@ -22,7 +23,7 @@ function ShopPage() {
   const displayProduct = fetchedData?.[0]?.map((el) => (
     <ProductCard productInfo={el} />
   ));
-  // {displayProduct}
+  if (loading) return <Loading></Loading>;
   return (
     <div className="mt-[120px] flex gap-10">
       {fetchedData.length > 0 && displayProduct}
