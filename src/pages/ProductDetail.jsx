@@ -16,6 +16,7 @@ import { useLocation } from "react-router-dom";
 import { redirectTo } from "../features/auth/slice/authSlice";
 import RedirectToLogin from "./RedirectToLogin";
 import createColor from "../utils/createColor";
+import Loading from "../components/Loading";
 
 function ProductDetail() {
   const dispatch = useDispatch();
@@ -24,21 +25,45 @@ function ProductDetail() {
   const [pic, setPic] = useState(0);
   const user = useSelector((state) => state.auth.user);
   const location = useLocation();
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
   console.log("id", id);
+
   useEffect(() => {
     dispatch(removeProductAsync());
     dispatch(fetchProductDetailAsync(id));
     dispatch(redirectTo(location));
-    console.log("running---");
+  }, []);
+
+  // useEffect(() => {
+  //   if (initialLoading) {
+  //     setInitialLoading(false);
+  //   }
+  // }, [initialLoading]);
+  // useEffect(() => {
+  //   window.location.reload();
+  // }, []);
+
+  // useEffect(() => {
+  //   if (initialLoading) {
+  //     setInitialLoading(false); // Update the flag to prevent further reloads
+  //     window.location.reload(); // Reload the page
+  //   }
+  // }, [initialLoading]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
   }, []);
 
   const detailsData = useSelector((state) => state.product.details);
   // fetch from db => call api to find
 
   const [detailsDataTransformed] = detailsData;
-
-  console.log("detail", detailsDataTransformed);
+  // if (+detailsDataTransformed.productModelId !== id) {
+  //   window.location.reload();
+  // }
 
   const defaultPrice = detailsDataTransformed?.price;
   const [price, setPrice] = useState(defaultPrice);
@@ -51,10 +76,8 @@ function ProductDetail() {
     });
   };
 
-  console.log("detailData", detailsData);
-  console.log("detailDataTransForm", detailsDataTransformed);
-
   const [selectedProduct, setSelectedProduct] = useState({
+    id: detailsData[0]?.ProductModel,
     name: detailsDataTransformed?.name,
     size: detailsDataTransformed?.sizes[0],
     quantity: quantity,
@@ -69,12 +92,14 @@ function ProductDetail() {
   useEffect(() => {
     setSelectedProduct((prev) => {
       return {
-        name: name,
+        name: detailsDataTransformed?.name,
         size: detailsDataTransformed?.sizes[0],
         quantity: quantity,
-        color: selectedProduct.color ?? detailsData[0]?.colorId,
+        color: selectedProduct.color || detailsData[0]?.colorId,
+        // color: detailsData[0]?.colorId || selectedProduct.color,
         price: defaultPrice,
-        img: selectedProduct.img ?? detailsData[0]?.imgs[0],
+        img: selectedProduct.img || detailsData[0]?.imgs[0],
+        // img: detailsData[0]?.imgs[0] || selectedProduct.img,
         productModel: id,
         sumPrice: defaultPrice * quantity,
         // name: name,
@@ -88,6 +113,21 @@ function ProductDetail() {
       };
     });
   }, [detailsData, quantity]);
+  useEffect(() => {
+    setSelectedProduct((prev) => {
+      return {
+        ...prev,
+        name: detailsDataTransformed?.name,
+        size: detailsDataTransformed?.sizes[0],
+        quantity: quantity,
+        color: detailsData[0]?.colorId,
+        price: defaultPrice,
+        img: detailsData[0]?.imgs[0],
+        productModel: id,
+        sumPrice: defaultPrice * quantity,
+      };
+    });
+  }, [detailsData]);
 
   console.log("selected product", selectedProduct);
   let size = detailsDataTransformed?.sizes.map((el) => {
@@ -206,7 +246,7 @@ function ProductDetail() {
 
       <div className="flex flex-col gap-5 w-[450px]">
         <div className="flex">
-          <p>{name.toUpperCase()}</p>
+          <p>{detailsDataTransformed?.name.toUpperCase()}</p>
         </div>
         <hr />
         <p className="text-gray-500 font-light">COLOR</p>
@@ -265,6 +305,9 @@ function ProductDetail() {
       </div>
     </div>
   );
+
+  // main UI
+  if (isLoading) return <Loading></Loading>;
   return <>{display}</>;
 }
 

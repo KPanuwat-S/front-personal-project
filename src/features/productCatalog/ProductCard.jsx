@@ -9,6 +9,10 @@ import {
   removeFromLike,
 } from "../../features/productCatalog/slice/cartSlice";
 import createColor from "../../utils/createColor";
+import {
+  fetchProductDetailAsync,
+  removeProductAsync,
+} from "./slice/productSlice";
 function ProductCard({ productInfo }) {
   const [ref, inView] = useInView({
     triggerOnce: true, // Animation triggers only once when element comes into view
@@ -57,7 +61,15 @@ function ProductCard({ productInfo }) {
       <div className="relative w-[270px]">
         <Link to={`/products/${id}`}>
           {" "}
-          <div className="w-full">
+          <div
+            className="w-full"
+            onClick={() => {
+              dispatch(removeProductAsync());
+              // dispatch(removeProductAsync());
+              // dispatch(fetchProductDetailAsync(id));
+              // window.location.reload();
+            }}
+          >
             <img
               src={picSource}
               alt="product-picture"
