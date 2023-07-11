@@ -2,8 +2,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-// const user = useSelector((state) => state.auth.user);
-// const cartItems = useSelector((state) => state.cart.cartProducts);
 function SuccessPayment() {
   return (
     <div className="mx-auto w-1/2">

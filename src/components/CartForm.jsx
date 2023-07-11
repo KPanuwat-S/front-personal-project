@@ -99,7 +99,7 @@ function CartForm({ data, setOpen, linkTo, id }) {
             onClick={addItemsToCartHandler}
             className="px-5 py-2 rounded-xl text-white bg-gray-800 hover:bg-gray-700 ease-in-out duration-300"
           >
-            ADD TO CART
+            CONFIRM
           </button>
           {/* </Link> */}
         </div>

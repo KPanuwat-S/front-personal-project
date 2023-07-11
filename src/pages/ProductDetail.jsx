@@ -10,7 +10,6 @@ import QuantityInput from "../components/QuantityInput";
 import Button from "../components/Button";
 import Modal from "../components/Modal";
 import CartForm from "../components/CartForm";
-import { v4 as uuidv4 } from "uuid";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { redirectTo } from "../features/auth/slice/authSlice";
@@ -26,30 +25,12 @@ function ProductDetail() {
   const user = useSelector((state) => state.auth.user);
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
-  const [initialLoading, setInitialLoading] = useState(true);
-  console.log("id", id);
 
   useEffect(() => {
     dispatch(removeProductAsync());
     dispatch(fetchProductDetailAsync(id));
     dispatch(redirectTo(location));
   }, []);
-
-  // useEffect(() => {
-  //   if (initialLoading) {
-  //     setInitialLoading(false);
-  //   }
-  // }, [initialLoading]);
-  // useEffect(() => {
-  //   window.location.reload();
-  // }, []);
-
-  // useEffect(() => {
-  //   if (initialLoading) {
-  //     setInitialLoading(false); // Update the flag to prevent further reloads
-  //     window.location.reload(); // Reload the page
-  //   }
-  // }, [initialLoading]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -58,12 +39,8 @@ function ProductDetail() {
   }, []);
 
   const detailsData = useSelector((state) => state.product.details);
-  // fetch from db => call api to find
 
   const [detailsDataTransformed] = detailsData;
-  // if (+detailsDataTransformed.productModelId !== id) {
-  //   window.location.reload();
-  // }
 
   const defaultPrice = detailsDataTransformed?.price;
   const [price, setPrice] = useState(defaultPrice);
@@ -93,23 +70,13 @@ function ProductDetail() {
     setSelectedProduct((prev) => {
       return {
         name: detailsDataTransformed?.name,
-        size: detailsDataTransformed?.sizes[0],
+        size: selectedProduct.size || detailsDataTransformed?.sizes[0],
         quantity: quantity,
         color: selectedProduct.color || detailsData[0]?.colorId,
-        // color: detailsData[0]?.colorId || selectedProduct.color,
         price: defaultPrice,
         img: selectedProduct.img || detailsData[0]?.imgs[0],
-        // img: detailsData[0]?.imgs[0] || selectedProduct.img,
+
         productModel: id,
-        sumPrice: defaultPrice * quantity,
-        // name: name,
-        // size: selectedProduct.size,
-        // quantity: quantity,
-        // color: selectedProduct.color,
-        // price: defaultPrice,
-        // img: selectedProduct.img,
-        // productModel: id,
-        // sumPrice: defaultPrice * quantity,
       };
     });
   }, [detailsData, quantity]);
@@ -245,8 +212,8 @@ function ProductDetail() {
       </div>
 
       <div className="flex flex-col gap-5 w-[450px]">
-        <div className="flex">
-          <p>{detailsDataTransformed?.name.toUpperCase()}</p>
+        <div className="flex ">
+          <p className="">{detailsDataTransformed?.name.toUpperCase()}</p>
         </div>
         <hr />
         <p className="text-gray-500 font-light">COLOR</p>
@@ -306,7 +273,6 @@ function ProductDetail() {
     </div>
   );
 
-  // main UI
   if (isLoading) return <Loading></Loading>;
   return <>{display}</>;
 }

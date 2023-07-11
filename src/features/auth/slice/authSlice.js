@@ -9,6 +9,7 @@ const initialState = {
   user: null,
   initial: true,
   location: null,
+  newUser: null,
 };
 
 export const registerAsync = createAsyncThunk(
@@ -74,6 +75,9 @@ export const authSlice = createSlice({
     redirectTo: (state, action) => {
       state.location = action.payload;
     },
+    getNewUserInfo: (state, action) => {
+      state.newUser = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -115,5 +119,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { redirectTo } = authSlice.actions;
+export const { redirectTo, getNewUserInfo } = authSlice.actions;
 export default authSlice.reducer;

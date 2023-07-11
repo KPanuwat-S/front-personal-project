@@ -9,14 +9,11 @@ import {
 import Loading from "../components/Loading";
 
 function ShopPage() {
-  const [data, setData] = useState();
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.product.loading);
   useEffect(() => {
+    dispatch(removeProductAsync()).unwrap();
     dispatch(fetchProductAsync()).unwrap();
-    return () => {
-      // dispatch(removeProductAsync()).unwrap();
-    };
   }, []);
   const fetchedData = useSelector((state) => state.product.products);
 

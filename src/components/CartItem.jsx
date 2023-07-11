@@ -12,7 +12,7 @@ import { fetchProductDetailAsync } from "../features/productCatalog/slice/produc
 function CartItem({ data, deleteItemHandler, fetch, setFetch }) {
   const dispatch = useDispatch();
   const { id, name, price, size, imgs, quantity, productModelId, color } = data;
-
+  const [openDelete, setOpenDelete] = useState(false);
   console.log("data", data);
   const dataHandler = (e) => {
     e.preventDefault();
@@ -83,7 +83,7 @@ function CartItem({ data, deleteItemHandler, fetch, setFetch }) {
                 {" "}
                 <Modal
                   open={open}
-                  title="EDIT ITEM"
+                  title="CUSTOMIZE"
                   width={35}
                   onClose={() => {
                     setOpen(false);
@@ -98,14 +98,74 @@ function CartItem({ data, deleteItemHandler, fetch, setFetch }) {
                   ></CartEditItem>
                 </Modal>
               </div>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  deleteItemHandler(id);
-                }}
-              >
-                DELETE
-              </button>
+              {
+                <>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpenDelete(true);
+                      // deleteItemHandler(id);
+                    }}
+                  >
+                    DELETE
+                  </button>
+
+                  <Modal
+                    open={openDelete}
+                    title="Delete Product"
+                    width={35}
+                    onClose={() => {
+                      setOpenDelete(false);
+                    }}
+                  >
+                    <div className="flex gap-5">
+                      <img className="w-[150px]" src={imgs[0]} alt="" />
+                      <div className="flex flex-col">
+                        <div className="text-gray-600 mb-5">
+                          {name?.toUpperCase()}
+                        </div>
+                        <div>
+                          <span className="text-gray-400 font-light">
+                            SIZE:{" "}
+                          </span>{" "}
+                          {sizeText}
+                        </div>
+                        <div className="flex gap-2">
+                          <span className="text-gray-400 font-light">
+                            COLOR:{" "}
+                          </span>{" "}
+                          {colorStyle}
+                        </div>
+                        <div>
+                          <span className="text-gray-400 font-light">
+                            QUANTITY:{" "}
+                          </span>{" "}
+                          {quantity}
+                        </div>
+                        <div>
+                          <span className="text-gray-400 font-light">
+                            PRIZE:{" "}
+                          </span>
+                          {price * quantity}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex">
+                      <div className="flex-1"></div>
+                      <button
+                        onClick={() => {
+                          deleteItemHandler(id);
+                          setOpenDelete(false);
+                        }}
+                        className="flex gap-2 justify-center items-center w-[120px] text-center px-5 py-2 rounded-xl  bg-gray-800 hover:bg-gray-700 ease-in-out duration-300"
+                      >
+                        <i class="fa-regular fa-trash-can text-white"></i>
+                        <p className="text-white"> DELETE</p>
+                      </button>
+                    </div>
+                  </Modal>
+                </>
+              }
             </div>
           </div>
         </div>

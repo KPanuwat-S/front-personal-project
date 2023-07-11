@@ -58,7 +58,7 @@ function ProductCard({ productInfo }) {
   };
   return (
     <div ref={ref} className={animationClasses}>
-      <div className="relative w-[270px]">
+      <div className=" relative w-[270px]">
         <Link to={`/products/${id}`}>
           {" "}
           <div

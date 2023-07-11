@@ -7,8 +7,9 @@ import InputErrorMessage from "../../auth/components/InputErrorMessage";
 import { PronvinceTh } from "../../../data/ProvinceTH";
 import { CityTH } from "../../../data/CityTH";
 import { DistrictTh } from "../../../data/DistrictTH";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { registerAsync } from "../../auth/slice/authSlice";
 function AddressForm({ handleClick, currentStep, steps }) {
   const [addressData, setAddressData] = useState({
     province: "",
@@ -16,17 +17,20 @@ function AddressForm({ handleClick, currentStep, steps }) {
     district: "",
     zipCode: "",
   });
-  const { input, handleChangeInput, error, handleSubmitForm } = useForm(
-    {
-      province: "",
-      city: "",
-      district: "",
-      street: "",
-      addressLine: "",
-      zipCode: "",
-    },
-    addressRegisterSchemaValidate
-  );
+  const dispatch = useDispatch();
+  const newUserInfo = useSelector((state) => state.auth.newUser);
+  console.log("newUser", newUserInfo);
+  // const { input, handleChangeInput, error, handleSubmitForm } = useForm(
+  //   {
+  //     province: "",
+  //     city: "",
+  //     district: "",
+  //     street: "",
+  //     addressLine: "",
+  //     zipCode: "",
+  //   },
+  //   addressRegisterSchemaValidate
+  // );
 
   const selectHandler = (e) => {
     e.preventDefault();
@@ -35,12 +39,16 @@ function AddressForm({ handleClick, currentStep, steps }) {
     setAddressData(newData);
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (e) => {
+    e.preventDefault();
     try {
+      const data = { ...newUserInfo, ...addressData };
+      console.log("final data", data);
+      handleClick("next");
       await dispatch(registerAsync(data)).unwrap();
     } catch (err) {
       console.log(err);
-      toast.error("Invalid email address or mobile number or password");
+      // toast.error("Invalid email address or mobile number or password");
     }
   };
 
@@ -51,14 +59,16 @@ function AddressForm({ handleClick, currentStep, steps }) {
   const selectedCity = CityTH.find((el) => el.name_th === addressData.city);
   const setZipCode = (e) => {
     const district = DistrictTh.find((el) => el.name_th === e.target.value);
-    const newData = { ...addressData, zipCode: district.zip_code };
+    const newData = {
+      ...addressData,
+      district: district["name_th"],
+      zipCode: district.zip_code,
+    };
+    console.log("newData");
     setAddressData(newData);
   };
   return (
-    <form
-      // onSubmit={handleSubmitForm(onSubmit)}
-      className="w-2/3 flex flex-col gap-10"
-    >
+    <form onSubmit={onSubmit} className="mb-5  w-2/3 flex flex-col gap-10">
       <div className="flex justify-between gap-10">
         <div className="w-full">
           {/* 
@@ -77,7 +87,7 @@ function AddressForm({ handleClick, currentStep, steps }) {
               return <option value={el.name_th}>{el.name_th}</option>;
             })}
           </select>
-          <InputErrorMessage message={error.province} />
+          {/* <InputErrorMessage message={error.province} /> */}
         </div>
         {/* 
           CITY
@@ -96,7 +106,7 @@ function AddressForm({ handleClick, currentStep, steps }) {
                 return <option value={el.name_th}>{el.name_th}</option>;
             })}
           </select>
-          <InputErrorMessage message={error.city} />
+          {/* <InputErrorMessage message={error.city} /> */}
         </div>
       </div>
 
@@ -121,7 +131,7 @@ function AddressForm({ handleClick, currentStep, steps }) {
                 return <option value={el.name_th}>{el.name_th}</option>;
             })}
           </select>
-          <InputErrorMessage message={error.district} />
+          {/* <InputErrorMessage message={error.district} /> */}
         </div>
         <div className="w-full">
           <label htmlFor="zipCode">ZIP Code</label>
@@ -152,7 +162,8 @@ function AddressForm({ handleClick, currentStep, steps }) {
       <div className="flex gap-5 justify-center items-center">
         <Link to="/profilePage">
           <button
-            onClick={() => {
+            onClick={(e) => {
+              onSubmit(e);
               handleClick();
             }}
             className="text-gray-900 bg-white border border-black hover:bg-gray-800 hover:text-white ease-out duration-300 rounded-xl px-10 py-2 "

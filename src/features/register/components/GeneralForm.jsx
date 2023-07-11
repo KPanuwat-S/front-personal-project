@@ -5,7 +5,7 @@ import { generalRegisterValidate } from "../../validators/validateRegister";
 import InputErrorMessage from "../../auth/components/InputErrorMessage";
 // import StepperControl from "../../stepper/StepperControl";
 import { useDispatch } from "react-redux";
-import { registerAsync } from "../../auth/slice/authSlice";
+import { getNewUserInfo, registerAsync } from "../../auth/slice/authSlice";
 import { Link } from "react-router-dom";
 function GeneralForm({ handleClick, currentStep, steps }) {
   const dispatch = useDispatch();
@@ -24,7 +24,8 @@ function GeneralForm({ handleClick, currentStep, steps }) {
     try {
       console.log("data", data);
 
-      await dispatch(registerAsync(data)).unwrap();
+      dispatch(getNewUserInfo(data));
+      // await dispatch(registerAsync(data)).unwrap();
 
       handleClick("next");
     } catch (err) {
@@ -34,7 +35,7 @@ function GeneralForm({ handleClick, currentStep, steps }) {
   return (
     <form
       onSubmit={handleSubmitForm(onSubmit)}
-      className="w-2/3 flex flex-col gap-10"
+      className="mb-[120px] w-2/3 flex flex-col gap-10"
     >
       <div className="flex justify-between gap-10">
         <div className="w-full">
@@ -135,9 +136,6 @@ function GeneralForm({ handleClick, currentStep, steps }) {
            px-10
            py-2"
           type="submit"
-          // onClick={() => {
-          //   handleClick("next");
-          // }}
         >
           SUBMIT
         </button>

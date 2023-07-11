@@ -29,10 +29,6 @@ const generalRegisterSchema = Joi.object({
     "string.empty": "Confirm password is required.",
   }),
 });
-const addressRegisterSchema = Joi.object({
-  
-});
-const paymentRegisterSchema = Joi.object({});
 
 export const generalRegisterValidate = (input) => {
   const { error } = generalRegisterSchema.validate(input, {

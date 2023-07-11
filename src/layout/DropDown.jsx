@@ -54,6 +54,7 @@ export default function Dropdown() {
                 className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-xl"
                 onClick={() => {
                   dispatch(logout());
+                  navigate("/authenticate");
                 }}
               >
                 <div className="flex gap-2">
