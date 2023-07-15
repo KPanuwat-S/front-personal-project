@@ -22,7 +22,7 @@ function ShopPage() {
   ));
   if (loading) return <Loading></Loading>;
   return (
-    <div className="mt-[120px] flex gap-10">
+    <div className="mt-[120px] grid grid-cols-4 gap-20 mb-[120px]">
       {fetchedData.length > 0 && displayProduct}
     </div>
   );

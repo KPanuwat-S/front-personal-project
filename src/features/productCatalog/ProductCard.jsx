@@ -1,6 +1,5 @@
 import { useState } from "react";
 import ColorDot from "./components/ColorDot";
-import Pirce from "./components/Pirce";
 import { Link } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
 import { useDispatch } from "react-redux";
@@ -13,6 +12,7 @@ import {
   fetchProductDetailAsync,
   removeProductAsync,
 } from "./slice/productSlice";
+import Price from "./components/Price";
 function ProductCard({ productInfo }) {
   const [ref, inView] = useInView({
     triggerOnce: true, // Animation triggers only once when element comes into view
@@ -22,27 +22,9 @@ function ProductCard({ productInfo }) {
 
   const { id, name, description, discount, price, color, imgs } = productInfo;
   const displayColor = color.map((el) => {
-    const color = createColor(el);
-    console.log(color);
-    let colorProperty;
-    if (color == "black" || color == "white") {
-      colorProperty = `bg-${color}`;
-    } else colorProperty = `bg-${color}-400`;
-
-    return <ColorDot color={colorProperty} />;
+    return <ColorDot color={el} />;
   });
-  // "id": 1,
-  // "name": "basic t-shirt",
-  // "description": "Loose-fit T-shirt made of compact cotton. Round neck and short sleeves.",
-  // "discount": "0",
-  // "price": "550",
-  // "createdAt": "2023-05-01T00:00:00.000Z",
-  // "gender": 1,
-  // "category": 1,
-  // "color": [
-  //     2,
-  //     1
-  // ]
+
   const dispatch = useDispatch();
   const [heart, setHeart] = useState(false);
   const [picSource, setPicSource] = useState(imgs[0]);
@@ -65,9 +47,6 @@ function ProductCard({ productInfo }) {
             className="w-full"
             onClick={() => {
               dispatch(removeProductAsync());
-              // dispatch(removeProductAsync());
-              // dispatch(fetchProductDetailAsync(id));
-              // window.location.reload();
             }}
           >
             <img
@@ -84,7 +63,7 @@ function ProductCard({ productInfo }) {
           </div>
           <div className="mt-2">
             <p className="text-sm font-sm text-gray-700">{name}</p>
-            <Pirce price={price} />
+            <Price price={price} discount={discount} />
           </div>
           <div className="flex gap-1 mt-2">{displayColor}</div>
         </Link>

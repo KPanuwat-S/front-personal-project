@@ -25,6 +25,7 @@ function CartOrder() {
   const location = useLocation();
 
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
   return (
     <div className="rounded-lg w-[400px] shadow-[0_0_15px_rgb(0_0_0_/0.2)] flex flex-col gap-10 overflow-hidden ">
       <div className="flex flex-col flex-1 px-10 py-10 gap-5">

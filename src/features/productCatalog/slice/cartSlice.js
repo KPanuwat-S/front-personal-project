@@ -9,19 +9,9 @@ const initialState = {
   likedProducts: [],
   orderProducts: [],
   loading: false,
+  order: [],
 };
 
-// export const addCartProductAsync = createAsyncThunk(
-//   "cart/addCartProductAsync",
-//   async (input, thunkApi) => {
-//     try {
-// { name, price, size, img, quantity, gender, color } = data;
-//       return res.data.allProductModels;
-//     } catch (err) {
-//       return thunkApi.rejectWithValue(err.response.data.message);
-//     }
-//   }
-// );
 export const addItemToCartAsync = createAsyncThunk(
   "cart/addItemToCartAsync",
   async (input, thunkApi) => {
@@ -112,6 +102,29 @@ export const editItemCartAsync = createAsyncThunk(
 //   }
 // );
 
+export const confirOrderAsync = createAsyncThunk(
+  "cart/confirOrderAsync",
+  async (input, thunkApi) => {
+    try {
+      await cartService.confirmCart();
+    } catch (err) {
+      return thunkApi.rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const getOrderAsync = createAsyncThunk(
+  "cart/getOrderAsync",
+  async (input, thunkApi) => {
+    try {
+      const res = await cartService.getOrder();
+      return res.data;
+    } catch (err) {
+      return thunkApi.rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
@@ -153,7 +166,12 @@ export const cartSlice = createSlice({
     },
     calPrice(state, action) {
       state.cartTotalAmount = state.cartItems.reduce((acc, el) => {
-        acc += +el.price * el.quantity;
+        console.log("el", el);
+        if (el.discount == 0) {
+          acc += +el.price * el.quantity;
+        } else {
+          acc += (+el.price - (el.price * el.discount) / 100) * el.quantity;
+        }
         console.log("el", el.price);
         return acc;
       }, 0);
@@ -203,13 +221,10 @@ export const cartSlice = createSlice({
       .addCase(editItemCartAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(getOrderAsync.fulfilled, (state, action) => {
+        state.order = action.payload;
       });
-    // .addCase(updateCartItem.fulfilled, (state, action) => {
-    //   const editItem = action.payload;
-    //   console.log("edititem", editItem);
-    //   const index = state.cartItems.findIndex((el) => el.id == editItem.id);
-    //   state.cartItems.splice(index, 1, editItem);
-    // });
   },
 });
 

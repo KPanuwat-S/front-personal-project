@@ -11,7 +11,18 @@ import { fetchProductDetailAsync } from "../features/productCatalog/slice/produc
 
 function CartItem({ data, deleteItemHandler, fetch, setFetch }) {
   const dispatch = useDispatch();
-  const { id, name, price, size, imgs, quantity, productModelId, color } = data;
+  const {
+    id,
+    name,
+    price,
+    size,
+    imgs,
+    quantity,
+    productModelId,
+    color,
+    discount,
+  } = data;
+
   const [openDelete, setOpenDelete] = useState(false);
   console.log("data", data);
   const dataHandler = (e) => {
@@ -37,6 +48,9 @@ function CartItem({ data, deleteItemHandler, fetch, setFetch }) {
 
   console.log("color", color);
 
+  const discountPrice = (price - (price * discount) / 100).toFixed(2);
+  console.log("discount", discount);
+  const showPrice = discount > 0 ? discountPrice : price;
   return (
     <div>
       <div className="flex flex-col gap-5">
@@ -58,7 +72,7 @@ function CartItem({ data, deleteItemHandler, fetch, setFetch }) {
             </div>
             <div>
               <span className="text-gray-400 font-light">PRIZE: </span>
-              {price * quantity}
+              {showPrice * quantity}
             </div>
           </div>
           <div className="flex flex-1 justify-between items-center">
@@ -95,6 +109,7 @@ function CartItem({ data, deleteItemHandler, fetch, setFetch }) {
                     productModelId={productModelId}
                     fetch={fetch}
                     setFetch={setFetch}
+                    showPrice={showPrice}
                   ></CartEditItem>
                 </Modal>
               </div>
@@ -146,7 +161,7 @@ function CartItem({ data, deleteItemHandler, fetch, setFetch }) {
                           <span className="text-gray-400 font-light">
                             PRIZE:{" "}
                           </span>
-                          {price * quantity}
+                          {showPrice * quantity}
                         </div>
                       </div>
                     </div>

@@ -11,7 +11,14 @@ import {
 } from "../features/productCatalog/slice/cartSlice";
 import Loading from "./Loading";
 
-function CartEditItem({ id, setOpen, productModelId, fetch, setFetch }) {
+function CartEditItem({
+  id,
+  setOpen,
+  productModelId,
+  fetch,
+  setFetch,
+  showPrice,
+}) {
   const data = useSelector((state) => state.cart.cartItems);
   const dispatch = useDispatch();
 
@@ -27,7 +34,7 @@ function CartEditItem({ id, setOpen, productModelId, fetch, setFetch }) {
   // Retrieve Value of Data
   const { name, price, size, imgs, quantity, gender, color } = editData;
   const [editDataFinal, setEditDataFinal] = useState(editData);
-  const [editPrice, seteditPrice] = useState(price);
+  const [editPrice, seteditPrice] = useState(showPrice);
   const [editQuantity, setEditQuantity] = useState(quantity);
 
   const sizes = detailsDataTransformed?.["sizes"].map((el) => el);
@@ -58,7 +65,7 @@ function CartEditItem({ id, setOpen, productModelId, fetch, setFetch }) {
         price: editPrice,
         img: detailsDataTransformed?.imgs?.[0],
         quantity: editQuantity,
-        sumPrice: price * editQuantity,
+        sumPrice: showPrice * editQuantity,
       };
     });
   }, [
@@ -181,7 +188,7 @@ function CartEditItem({ id, setOpen, productModelId, fetch, setFetch }) {
 
             <div>
               <span className="text-gray-400 font-light">PRIZE: </span>
-              {price * editQuantity}
+              {showPrice * editQuantity}
             </div>
           </div>
         </div>

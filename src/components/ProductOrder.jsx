@@ -10,16 +10,20 @@ import CartEditItem from "./CartEditItem";
 
 function ProductOrder({ data }) {
   const dispatch = useDispatch();
-  const { id, name, price, size, img, quantity, gender, color } = data;
-  // console.log("id from cartitem", id);
-  // console.log(data);
-  const dataHandler = (e) => {
-    e.preventDefault();
-    const newData = { ...itemData, [e.target.name]: e.target.value };
-    setItemData(newData);
-  };
-  const sizeText = createSizes(size);
-  const colorVText = createColor(color);
+  const {
+    id,
+    name,
+    price,
+    sizeId,
+    img,
+    quantity,
+    genderId,
+    colorId,
+    createdAt,
+  } = data;
+
+  const sizeText = createSizes(sizeId);
+  const colorVText = createColor(colorId);
   const style = {
     backgroundColor: colorVText,
   };
@@ -31,11 +35,11 @@ function ProductOrder({ data }) {
   );
 
   return (
-    <div>
-      <div className="flex flex-col gap-5">
+    <div className="mt-5">
+      <div className="flex flex-col gap-5 ">
         <div className="flex gap-5">
-          <img className="w-[100px]" src={img} alt="" />
-          <div className="flex flex-col">
+          <img className="w-[90px]" src={img} alt="" />
+          <div className="flex text-xs flex-col">
             <div className="text-gray-600 mb-5">{name.toUpperCase()}</div>
             <div>
               <span className="text-gray-400 font-light">SIZE: </span>{" "}
@@ -68,7 +72,7 @@ function ProductOrder({ data }) {
                 className="flex gap-2 items-center"
               >
                 <p className="text-yellow-500 font-light text-sm hover:text-yellow-700 hover:underline">
-                  ON TRACK
+                  {new Date(createdAt).toDateString()}
                 </p>
               </div>
               <div></div>

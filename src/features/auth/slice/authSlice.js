@@ -8,7 +8,7 @@ const initialState = {
   loading: false,
   user: null,
   initial: true,
-  location: null,
+  address: null,
   newUser: null,
 };
 
@@ -61,6 +61,18 @@ export const fetchMe = createAsyncThunk("auth/fetchMe", async (_, thunkApi) => {
     return thunkApi.rejectWithValue(err.response.data.message);
   }
 });
+
+export const getAddressAsync = createAsyncThunk(
+  "auth/getAddressAsync",
+  async (_, thunkApi) => {
+    try {
+      const res = await authService.getAddress();
+      return res.data;
+    } catch (err) {
+      return thunkApi.rejectWithValue(err.response.data.message);
+    }
+  }
+);
 
 export const logout = createAsyncThunk("auth/logout", async () => {
   // const navigate = useNavigate();
@@ -115,6 +127,9 @@ export const authSlice = createSlice({
       })
       .addCase(fetchMe.pending, (state) => {
         state.initialLoading = true;
+      })
+      .addCase(getAddressAsync.fulfilled, (state, action) => {
+        state.address = action.payload;
       });
   },
 });

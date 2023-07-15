@@ -22,6 +22,8 @@ function ManPage() {
     { id: 6, href: "/manBlazer", text: "Blazer" },
     { id: 7, href: "/manJacket", text: "Jacket" },
   ];
+  const dispatch = useDispatch();
+
   const clickHandler = (el) => {
     setCurrent(el.id);
     const query = { categoryId: el.id };
@@ -61,7 +63,6 @@ function ManPage() {
       </div>
     );
   });
-  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(removeProductAsync()).unwrap();
@@ -74,7 +75,7 @@ function ManPage() {
   return (
     <div>
       <div className="flex">{navigation}</div>
-      <div className="mt-[80px] flex gap-10">
+      <div className="mt-[80px] grid grid-cols-4 gap-20 mb-[120px]">
         {fetchedData.length > 0 && displayProduct}
       </div>
     </div>

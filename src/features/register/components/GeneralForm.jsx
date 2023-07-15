@@ -113,7 +113,6 @@ function GeneralForm({ handleClick, currentStep, steps }) {
         />
         <InputErrorMessage message={error.confirmPassword} />
       </div>
-      {/* <Link to="/addressPage"> */}
       <div className="flex gap-5 items-center justify-center">
         <Link to="/authenticate">
           <button

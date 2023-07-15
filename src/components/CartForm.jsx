@@ -87,7 +87,7 @@ function CartForm({ data, setOpen, linkTo, id }) {
             </div>
             <div>
               <span className="text-gray-400 font-light">PRIZE: </span>
-              {sumPrice}
+              {price * quantity}
             </div>
           </div>
         </div>

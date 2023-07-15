@@ -42,7 +42,15 @@ function ProductDetail() {
 
   const [detailsDataTransformed] = detailsData;
 
-  const defaultPrice = detailsDataTransformed?.price;
+  // ฿{price * 1 - discount / 100}
+  const discountPrice = (
+    detailsDataTransformed?.price -
+    (detailsDataTransformed?.price * detailsDataTransformed?.discount) / 100
+  ).toFixed(2);
+  const defaultPrice =
+    detailsDataTransformed?.discount > 0
+      ? discountPrice
+      : detailsDataTransformed?.price;
   const [price, setPrice] = useState(defaultPrice);
   const [quantity, setQuantity] = useState(1);
   const getQuantity = (quantity) => {
@@ -212,9 +220,13 @@ function ProductDetail() {
       </div>
 
       <div className="flex flex-col gap-5 w-[450px]">
-        <div className="flex ">
+        <div className="flex flex-col gap-2 w-full">
           <p className="">{detailsDataTransformed?.name.toUpperCase()}</p>
+          <p className="font-light text-gray-400 text-s">
+            {detailsDataTransformed?.description}
+          </p>
         </div>
+
         <hr />
         <p className="text-gray-500 font-light">COLOR</p>
         <div className="flex gap-4">{colors}</div>
