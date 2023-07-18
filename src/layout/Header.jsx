@@ -9,7 +9,7 @@ function Header() {
   // const hasItems = useSelector((state) => state.cart.hasItems);
   // const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   return (
-    <div className="flex justify-between items-center mt-4 mb-4 w-[1280px] m-auto">
+    <div className="flex justify-between items-center p-3 w-[1280px] m-auto sticky top-0 z-50 bg-white  bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-50 ">
       <div className="flex-1">
         <NavLink to="/">
           <h1 className="font-bold text-3xl">UrbanChic.</h1>

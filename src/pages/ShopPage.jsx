@@ -17,9 +17,12 @@ function ShopPage() {
   }, []);
   const fetchedData = useSelector((state) => state.product.products);
 
-  const displayProduct = fetchedData?.[0]?.map((el) => (
-    <ProductCard productInfo={el} />
-  ));
+  console.log("fetchData", fetchedData);
+  const displayProduct = fetchedData?.[0]?.map((el) => {
+    console.log("el", el);
+    return <ProductCard productInfo={el} />;
+  });
+
   if (loading) return <Loading></Loading>;
   return (
     <div className="mt-[120px] grid grid-cols-4 gap-20 mb-[120px]">

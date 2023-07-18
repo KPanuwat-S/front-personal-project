@@ -21,13 +21,14 @@ function ProductCard({ productInfo }) {
   const animationClasses = inView ? "slideInUp" : "";
 
   const { id, name, description, discount, price, color, imgs } = productInfo;
+  console.log("productIn", productInfo);
   const displayColor = color.map((el) => {
     return <ColorDot color={el} />;
   });
 
   const dispatch = useDispatch();
   const [heart, setHeart] = useState(false);
-  const [picSource, setPicSource] = useState(imgs[0]);
+  const [picSource, setPicSource] = useState(imgs?.[0]);
   const likeHandler = () => {
     if (heart) {
       dispatch(removeFromLike(productInfo.id));
